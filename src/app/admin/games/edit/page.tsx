@@ -31,7 +31,8 @@ export default function EditGamePage() {
 
   useEffect(() => {
     if (!id) return;
-    supabase.from("games").select("*").eq("id", id).single().then(({ data }) => {
+    supabase.from("games").select("*").eq("id", id).single().then(({ data: gameData }) => {
+      const data = gameData as any;
       if (data) {
         setTitle(data.title);
         setSlug(data.slug);
@@ -57,20 +58,24 @@ export default function EditGamePage() {
     setLoading(true);
     setError(null);
 
-    const { error: err } = await supabase.from("games").update({
-      title: title.trim(), developer: developer.trim(),
-      publisher: publisher.trim() || null,
-      release_year: releaseYear ? parseInt(releaseYear) : null,
-      genres: genres.split(",").map((g) => g.trim()).filter(Boolean),
-      platforms: platforms.split(",").map((p) => p.trim()).filter(Boolean),
-      description: description.trim() || null,
-      cover_url: coverUrl.trim() || null,
-      banner_url: bannerUrl.trim() || null,
-      is_featured: isFeatured,
-      is_spotlight: isSpotlight,
-      spotlight_quote: spotlightQuote.trim() || null,
-      editor_pick_label: editorPickLabel.trim() || null,
-    }).eq("id", id);
+    const { error: err } = await supabase
+      .from("games")
+      .update({
+        title: title.trim(),
+        developer: developer.trim(),
+        publisher: publisher.trim() || null,
+        release_year: releaseYear ? parseInt(releaseYear) : null,
+        genres: genres.split(",").map((g) => g.trim()).filter(Boolean),
+        platforms: platforms.split(",").map((p) => p.trim()).filter(Boolean),
+        description: description.trim() || null,
+        cover_url: coverUrl.trim() || null,
+        banner_url: bannerUrl.trim() || null,
+        is_featured: isFeatured,
+        is_spotlight: isSpotlight,
+        spotlight_quote: spotlightQuote.trim() || null,
+        editor_pick_label: editorPickLabel.trim() || null,
+      })
+      .eq("id", id);
 
     setLoading(false);
     if (err) { setError(err.message); return; }
