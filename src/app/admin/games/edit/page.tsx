@@ -58,15 +58,15 @@ export default function EditGamePage() {
     setLoading(true);
     setError(null);
 
-    const { error: err } = await supabase
+    const { error: err } = await (supabase as any)
       .from("games")
       .update({
         title: title.trim(),
         developer: developer.trim(),
         publisher: publisher.trim() || null,
         release_year: releaseYear ? parseInt(releaseYear) : null,
-        genres: genres.split(",").map((g) => g.trim()).filter(Boolean),
-        platforms: platforms.split(",").map((p) => p.trim()).filter(Boolean),
+        genres: genres.split(",").map((g: string) => g.trim()).filter(Boolean),
+        platforms: platforms.split(",").map((p: string) => p.trim()).filter(Boolean),
         description: description.trim() || null,
         cover_url: coverUrl.trim() || null,
         banner_url: bannerUrl.trim() || null,
