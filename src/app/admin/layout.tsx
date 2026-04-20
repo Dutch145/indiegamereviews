@@ -17,14 +17,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace("/auth/login"); return; }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("is_admin, username")
-        .eq("id", user.id)
-        .single();
+      const { data: profileData } = await supabase
+    .from("profiles")
+    .select("is_admin, username")
+    .eq("id", user.id)
+    .single();
 
-      if (!profile?.is_admin) { router.replace("/"); return; }
-      setUsername(profile.username);
+  const profile = profileData as any;
+  if (!profile?.is_admin) { router.replace("/"); return; }
+  setUsername(profile.username);
       setReady(true);
     }
     check();
