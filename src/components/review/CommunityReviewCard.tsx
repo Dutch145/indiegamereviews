@@ -25,8 +25,8 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
       user_id: currentUserId,
       helpful,
     });
-    if (helpful) setHelpfulYes((v) => v + 1);
-    else setHelpfulNo((v) => v + 1);
+    if (helpful) setHelpfulYes((v: number) => v + 1);
+    else setHelpfulNo((v: number) => v + 1);
     setVoted(true);
   }
 
