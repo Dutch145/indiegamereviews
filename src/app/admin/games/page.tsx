@@ -1,26 +1,25 @@
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import Link from "next/link"
+import { createClient } from "@/lib/supabase/server"
+import type { Game } from "@/types/database"
+
+type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
 
 export default async function AdminGamesPage() {
-  const supabase = await createClient();
-
-  const { data: games } = await supabase
+  const supabase = await createClient()
+  const { data } = await supabase
     .from("games")
     .select("*, editor_reviews(score_overall)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
 
-  const allGames = (games ?? []) as any[];
+  const games = (data ?? []) as unknown as GameWithReview[]
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Games</h1>
-        <Link href="/admin/games/new" className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          + Add game
-        </Link>
+        <Link href="/admin/games/new" className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">+ Add game</Link>
       </div>
-
-      {allGames.length > 0 ? (
+      {games.length > 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
@@ -34,22 +33,21 @@ export default async function AdminGamesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {allGames.map((game) => (
+              {games.map((game) => (
                 <tr key={game.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3 font-medium">{game.title}</td>
                   <td className="px-5 py-3 text-gray-500">{game.developer}</td>
                   <td className="px-5 py-3 text-gray-500">{game.release_year ?? "—"}</td>
                   <td className="px-5 py-3">
-                    {game.editor_reviews?.[0]?.score_overall != null ? (
-                      <span className="px-2 py-0.5 rounded bg-green-100 text-green-800 font-medium">{game.editor_reviews[0].score_overall}</span>
-                    ) : (
-                      <span className="text-gray-300">No review</span>
-                    )}
+                    {game.editor_reviews?.[0]?.score_overall != null
+                      ? <span className="px-2 py-0.5 rounded bg-green-100 text-green-800 font-medium">{game.editor_reviews[0].score_overall}</span>
+                      : <span className="text-gray-300">No review</span>
+                    }
                   </td>
-                  <td className="px-5 py-3 text-gray-500">{game.genres.slice(0, 2).join(", ")}</td>
+                  <td className="px-5 py-3 text-gray-500">{(game.genres ?? []).slice(0, 2).join(", ")}</td>
                   <td className="px-5 py-3 text-right">
-                    <Link href={"/admin/games/edit?id=" + game.id} className="text-indigo-600 hover:underline text-xs mr-4">Edit</Link>
-                    <Link href={"/games/" + game.slug} className="text-gray-400 hover:underline text-xs" target="_blank">View</Link>
+                    <Link href={`/admin/games/edit?id=${game.id}`} className="text-indigo-600 hover:underline text-xs mr-4">Edit</Link>
+                    <Link href={`/games/${game.slug}`} className="text-gray-400 hover:underline text-xs" target="_blank">View</Link>
                   </td>
                 </tr>
               ))}
@@ -63,5 +61,5 @@ export default async function AdminGamesPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

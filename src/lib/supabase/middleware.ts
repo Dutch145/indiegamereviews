@@ -1,31 +1,32 @@
-import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr"
+import { NextResponse, type NextRequest } from "next/server"
+import type { Database } from "@/types/database"
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+  let supabaseResponse = NextResponse.next({ request })
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
+        get(name: string) {
+          return request.cookies.get(name)?.value
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
+        set(name: string, value: string, options: Record<string, unknown>) {
+          request.cookies.set({ name, value, ...options } as any)
+          supabaseResponse = NextResponse.next({ request })
+          supabaseResponse.cookies.set({ name, value, ...options } as any)
+        },
+        remove(name: string, options: Record<string, unknown>) {
+          request.cookies.set({ name, value: "", ...options } as any)
+          supabaseResponse = NextResponse.next({ request })
+          supabaseResponse.cookies.set({ name, value: "", ...options } as any)
         },
       },
     }
-  );
+  )
 
-  await supabase.auth.getUser();
-
-  return supabaseResponse;
+  await supabase.auth.getUser()
+  return supabaseResponse
 }

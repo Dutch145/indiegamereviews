@@ -3,130 +3,264 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json }
-  | Json[];
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-export interface Database {
+export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      games: {
-        Row: {
-          id: string;
-          slug: string;
-          title: string;
-          developer: string;
-          publisher: string | null;
-          release_year: number | null;
-          genres: string[];
-          platforms: string[];
-          cover_url: string | null;
-          banner_url: string | null;
-          description: string | null;
-          is_featured: boolean;
-          is_spotlight: boolean;
-          spotlight_quote: string | null;
-          editor_pick_label: string | null;
-          created_at: string;
-        };
-        Insert: Omit
-          Database["public"]["Tables"]["games"]["Row"],
-          "id" | "created_at"
-        >;
-        Update: Partial<Database["public"]["Tables"]["games"]["Insert"]>;
-      };
-      editor_reviews: {
-        Row: {
-          id: string;
-          game_id: string;
-          author: string;
-          summary: string;
-          verdict: string;
-          score_overall: number;
-          score_gameplay: number | null;
-          score_visuals: number | null;
-          score_replayability: number | null;
-          score_audio: number | null;
-          published_at: string;
-          updated_at: string;
-        };
-        Insert: Omit
-          Database["public"]["Tables"]["editor_reviews"]["Row"],
-          "id" | "published_at" | "updated_at"
-        >;
-        Update: Partial
-          Database["public"]["Tables"]["editor_reviews"]["Insert"]
-        >;
-      };
       community_reviews: {
         Row: {
-          id: string;
-          game_id: string;
-          user_id: string;
-          score: number;
-          body: string;
-          review_type: string;
-          pros: string[];
-          cons: string[];
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: Omit
-          Database["public"]["Tables"]["community_reviews"]["Row"],
-          "id" | "created_at" | "updated_at"
-        >;
-        Update: Partial
-          Database["public"]["Tables"]["community_reviews"]["Insert"]
-        >;
-      };
+          body: string
+          cons: string[] | null
+          created_at: string
+          game_id: string
+          id: string
+          pros: string[] | null
+          review_type: string
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          cons?: string[] | null
+          created_at?: string
+          game_id: string
+          id?: string
+          pros?: string[] | null
+          review_type?: string
+          score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          cons?: string[] | null
+          created_at?: string
+          game_id?: string
+          id?: string
+          pros?: string[] | null
+          review_type?: string
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      editor_reviews: {
+        Row: {
+          author: string
+          game_id: string
+          id: string
+          published_at: string
+          score_audio: number | null
+          score_gameplay: number | null
+          score_overall: number
+          score_replayability: number | null
+          score_visuals: number | null
+          summary: string
+          updated_at: string
+          verdict: string
+        }
+        Insert: {
+          author: string
+          game_id: string
+          id?: string
+          published_at?: string
+          score_audio?: number | null
+          score_gameplay?: number | null
+          score_overall: number
+          score_replayability?: number | null
+          score_visuals?: number | null
+          summary: string
+          updated_at?: string
+          verdict: string
+        }
+        Update: {
+          author?: string
+          game_id?: string
+          id?: string
+          published_at?: string
+          score_audio?: number | null
+          score_gameplay?: number | null
+          score_overall?: number
+          score_replayability?: number | null
+          score_visuals?: number | null
+          summary?: string
+          updated_at?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
+      flagged_reviews: {
+        Row: {
+          created_at: string
+          flagged_by: string
+          id: string
+          reason: string | null
+          resolved: boolean
+          review_id: string
+        }
+        Insert: {
+          created_at?: string
+          flagged_by: string
+          id?: string
+          reason?: string | null
+          resolved?: boolean
+          review_id: string
+        }
+        Update: {
+          created_at?: string
+          flagged_by?: string
+          id?: string
+          reason?: string | null
+          resolved?: boolean
+          review_id?: string
+        }
+        Relationships: []
+      }
+      games: {
+        Row: {
+          banner_url: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          developer: string
+          editor_pick_label: string | null
+          genres: string[] | null
+          id: string
+          is_featured: boolean
+          is_spotlight: boolean
+          platforms: string[] | null
+          publisher: string | null
+          release_year: number | null
+          slug: string
+          spotlight_quote: string | null
+          title: string
+        }
+        Insert: {
+          banner_url?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          developer: string
+          editor_pick_label?: string | null
+          genres?: string[] | null
+          id?: string
+          is_featured?: boolean
+          is_spotlight?: boolean
+          platforms?: string[] | null
+          publisher?: string | null
+          release_year?: number | null
+          slug: string
+          spotlight_quote?: string | null
+          title: string
+        }
+        Update: {
+          banner_url?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          developer?: string
+          editor_pick_label?: string | null
+          genres?: string[] | null
+          id?: string
+          is_featured?: boolean
+          is_spotlight?: boolean
+          platforms?: string[] | null
+          publisher?: string | null
+          release_year?: number | null
+          slug?: string
+          spotlight_quote?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       helpful_votes: {
         Row: {
-          id: string;
-          review_id: string;
-          user_id: string;
-          helpful: boolean;
-          created_at: string;
-        };
-        Insert: Omit
-          Database["public"]["Tables"]["helpful_votes"]["Row"],
-          "id" | "created_at"
-        >;
-        Update: Partial
-          Database["public"]["Tables"]["helpful_votes"]["Insert"]
-        >;
-      };
+          created_at: string
+          helpful: boolean
+          id: string
+          review_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          helpful: boolean
+          id?: string
+          review_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          helpful?: boolean
+          id?: string
+          review_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
-          id: string;
-          username: string;
-          avatar_url: string | null;
-          is_admin: boolean;
-          created_at: string;
-        };
-        Insert: Omit
-          Database["public"]["Tables"]["profiles"]["Row"],
-          "created_at"
-        >;
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
-      };
-    };
+          avatar_url: string | null
+          created_at: string
+          id: string
+          is_admin: boolean
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          is_admin?: boolean
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          username?: string
+        }
+        Relationships: []
+      }
+    }
     Views: {
       community_reviews_with_votes: {
-        Row: Database["public"]["Tables"]["community_reviews"]["Row"] & {
-          username: string;
-          avatar_url: string | null;
-          helpful_yes: number;
-          helpful_no: number;
-        };
-      };
-    };
-  };
+        Row: {
+          avatar_url: string | null
+          body: string | null
+          cons: string[] | null
+          created_at: string | null
+          game_id: string | null
+          helpful_no: number | null
+          helpful_yes: number | null
+          id: string | null
+          pros: string[] | null
+          review_type: string | null
+          score: number | null
+          updated_at: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Relationships: []
+      }
+    }
+    Functions: {
+      is_admin: { Args: never; Returns: boolean }
+    }
+    Enums: { [_ in never]: never }
+    CompositeTypes: { [_ in never]: never }
+  }
 }
 
-export type Game = Database["public"]["Tables"]["games"]["Row"];
-export type EditorReview =
-  Database["public"]["Tables"]["editor_reviews"]["Row"];
-export type CommunityReview =
-  Database["public"]["Tables"]["community_reviews"]["Row"];
-export type CommunityReviewWithVotes =
-  Database["public"]["Views"]["community_reviews_with_votes"]["Row"];
-export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type Game = Database["public"]["Tables"]["games"]["Row"]
+export type EditorReview = Database["public"]["Tables"]["editor_reviews"]["Row"]
+export type CommunityReview = Database["public"]["Tables"]["community_reviews"]["Row"]
+export type FlaggedReview = Database["public"]["Tables"]["flagged_reviews"]["Row"]
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+export type CommunityReviewWithVotes = Database["public"]["Views"]["community_reviews_with_votes"]["Row"]

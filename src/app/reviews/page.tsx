@@ -1,29 +1,43 @@
-import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
-import { scoreColor, formatDate } from "@/lib/utils";
-import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server"
+import Link from "next/link"
+import { scoreColor, formatDate } from "@/lib/utils"
+import type { Metadata } from "next"
+import type { CommunityReviewWithVotes } from "@/types/database"
 
 export const metadata: Metadata = {
   title: "Reviews",
-  description: "All indie game reviews on IndieScout — editor reviews and community quick reviews.",
-};
+  description: "All indie game reviews on IndieScout.",
+}
+
+type EditorReviewWithGame = {
+  id: string
+  author: string
+  published_at: string
+  verdict: string
+  score_overall: number
+  games: { title: string; slug: string; cover_url: string | null } | null
+}
+
+type CommunityReviewWithGame = CommunityReviewWithVotes & {
+  games: { title: string; slug: string; cover_url: string | null } | null
+}
 
 export default async function ReviewsPage() {
-  const supabase = await createClient();
+  const supabase = await createClient()
 
-  const { data: editorReviews } = await supabase
+  const { data: editorData } = await supabase
     .from("editor_reviews")
-    .select("*, games(title, slug, cover_url, genres)")
-    .order("published_at", { ascending: false });
+    .select("id, author, published_at, verdict, score_overall, games(title, slug, cover_url)")
+    .order("published_at", { ascending: false })
 
-  const { data: communityReviews } = await supabase
+  const { data: communityData } = await supabase
     .from("community_reviews_with_votes")
     .select("*, games(title, slug, cover_url)")
     .order("created_at", { ascending: false })
-    .limit(20);
+    .limit(20)
 
-  const editors = (editorReviews ?? []) as any[];
-  const community = (communityReviews ?? []) as any[];
+  const editors = (editorData ?? []) as unknown as EditorReviewWithGame[]
+  const community = (communityData ?? []) as unknown as CommunityReviewWithGame[]
 
   return (
     <div className="space-y-12">
@@ -34,8 +48,8 @@ export default async function ReviewsPage() {
         </div>
         {editors.length > 0 ? (
           <div className="space-y-3">
-            {editors.map((review: any) => (
-              <Link key={review.id} href={"/games/" + review.games?.slug}>
+            {editors.map((review) => (
+              <Link key={review.id} href={`/games/${review.games?.slug}`}>
                 <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm transition-shadow flex gap-4">
                   <div className="w-12 h-16 rounded-lg bg-gray-900 flex-shrink-0 overflow-hidden flex items-center justify-center">
                     {review.games?.cover_url
@@ -51,7 +65,7 @@ export default async function ReviewsPage() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium border border-indigo-100">Full review</span>
-                        <span className={"text-sm font-semibold px-2.5 py-1 rounded-lg " + scoreColor(review.score_overall)}>{review.score_overall}</span>
+                        <span className={`text-sm font-semibold px-2.5 py-1 rounded-lg ${scoreColor(review.score_overall)}`}>{review.score_overall}</span>
                       </div>
                     </div>
                     <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{review.verdict}</p>
@@ -60,9 +74,7 @@ export default async function ReviewsPage() {
               </Link>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-400 text-sm text-center py-12">No editor reviews yet.</p>
-        )}
+        ) : <p className="text-gray-400 text-sm text-center py-12">No editor reviews yet.</p>}
       </section>
 
       <section>
@@ -72,8 +84,8 @@ export default async function ReviewsPage() {
         </div>
         {community.length > 0 ? (
           <div className="space-y-3">
-            {community.map((review: any) => (
-              <Link key={review.id} href={"/games/" + review.games?.slug}>
+            {community.map((review) => (
+              <Link key={review.id} href={`/games/${review.games?.slug}`}>
                 <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm transition-shadow flex gap-4">
                   <div className="w-12 h-16 rounded-lg bg-gray-900 flex-shrink-0 overflow-hidden flex items-center justify-center">
                     {review.games?.cover_url
@@ -85,29 +97,27 @@ export default async function ReviewsPage() {
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div>
                         <p className="font-medium text-sm">{review.games?.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">By {review.username} · {formatDate(review.created_at)}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">By {review.username} · {review.created_at ? formatDate(review.created_at) : ""}</p>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-xs px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 font-medium border border-gray-200">Quick review</span>
-                        <span className={"text-sm font-semibold px-2.5 py-1 rounded-lg " + scoreColor(review.score)}>{review.score}</span>
+                        <span className={`text-sm font-semibold px-2.5 py-1 rounded-lg ${scoreColor(review.score ?? 0)}`}>{review.score}</span>
                       </div>
                     </div>
                     <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{review.body}</p>
-                    {(review.pros?.length > 0 || review.cons?.length > 0) && (
+                    {(review.pros?.length || review.cons?.length) ? (
                       <div className="flex gap-3 mt-2">
-                        {review.pros?.length > 0 && <span className="text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">{review.pros.length} pro{review.pros.length !== 1 ? "s" : ""}</span>}
-                        {review.cons?.length > 0 && <span className="text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-100">{review.cons.length} con{review.cons.length !== 1 ? "s" : ""}</span>}
+                        {(review.pros?.length ?? 0) > 0 && <span className="text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">{review.pros!.length} pro{review.pros!.length !== 1 ? "s" : ""}</span>}
+                        {(review.cons?.length ?? 0) > 0 && <span className="text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-100">{review.cons!.length} con{review.cons!.length !== 1 ? "s" : ""}</span>}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </Link>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-400 text-sm text-center py-12">No community reviews yet.</p>
-        )}
+        ) : <p className="text-gray-400 text-sm text-center py-12">No community reviews yet.</p>}
       </section>
     </div>
-  );
+  )
 }

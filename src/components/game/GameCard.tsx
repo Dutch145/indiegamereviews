@@ -1,14 +1,13 @@
-import Link from "next/link";
-import { Game } from "@/types/database";
-import { scoreColor } from "@/lib/utils";
+import Link from "next/link"
+import type { Game } from "@/types/database"
+import { scoreColor } from "@/lib/utils"
 
 interface Props {
-  game: Game & { editor_reviews?: Array<{ score_overall: number }> | null };
+  game: Game & { editor_reviews?: Array<{ score_overall: number }> | null }
 }
 
 export function GameCard({ game }: Props) {
-  const score = game.editor_reviews?.[0]?.score_overall ?? null;
-  const hasReview = score !== null;
+  const score = game.editor_reviews?.[0]?.score_overall ?? null
 
   return (
     <Link href={`/games/${game.slug}`} className="block group">
@@ -23,11 +22,9 @@ export function GameCard({ game }: Props) {
               <span className="text-white/40 text-4xl font-bold">{game.title[0]}</span>
             </div>
           )}
-          {hasReview && (
+          {score !== null && (
             <div className="absolute top-2 right-2">
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-white/90 text-indigo-600 border border-indigo-100">
-                Reviewed
-              </span>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-white/90 text-indigo-600 border border-indigo-100">Reviewed</span>
             </div>
           )}
         </div>
@@ -38,18 +35,16 @@ export function GameCard({ game }: Props) {
               <p className="text-sm text-gray-400">{game.developer}</p>
             </div>
             {score !== null && (
-              <span className={`text-sm font-semibold px-2 py-1 rounded-lg flex-shrink-0 ${scoreColor(score)}`}>
-                {score}
-              </span>
+              <span className={`text-sm font-semibold px-2 py-1 rounded-lg flex-shrink-0 ${scoreColor(score)}`}>{score}</span>
             )}
           </div>
           <div className="flex flex-wrap gap-1 mt-3">
-            {game.genres.slice(0, 3).map((g) => (
+            {(game.genres ?? []).slice(0, 3).map((g: string) => (
               <span key={g} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{g}</span>
             ))}
           </div>
         </div>
       </div>
     </Link>
-  );
+  )
 }

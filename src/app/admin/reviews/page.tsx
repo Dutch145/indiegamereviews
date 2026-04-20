@@ -1,26 +1,25 @@
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { formatDate } from "@/lib/utils";
+import Link from "next/link"
+import { createClient } from "@/lib/supabase/server"
+import { formatDate } from "@/lib/utils"
+import type { EditorReview, Game } from "@/types/database"
+
+type ReviewWithGame = EditorReview & { games: Pick<Game, "title" | "slug"> | null }
 
 export default async function AdminReviewsPage() {
-  const supabase = await createClient();
-
-  const { data: reviewsData } = await supabase
+  const supabase = await createClient()
+  const { data } = await supabase
     .from("editor_reviews")
     .select("*, games(title, slug)")
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
 
-  const reviews = (reviewsData ?? []) as any[];
+  const reviews = (data ?? []) as unknown as ReviewWithGame[]
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Editor reviews</h1>
-        <Link href="/admin/reviews/new" className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-          + Write review
-        </Link>
+        <Link href="/admin/reviews/new" className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">+ Write review</Link>
       </div>
-
       {reviews.length > 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
@@ -43,8 +42,8 @@ export default async function AdminReviewsPage() {
                   </td>
                   <td className="px-5 py-3 text-gray-500">{formatDate(review.published_at)}</td>
                   <td className="px-5 py-3 text-right">
-                    <Link href={"/admin/reviews/new?edit=" + review.id} className="text-indigo-600 hover:underline text-xs mr-4">Edit</Link>
-                    <Link href={"/games/" + review.games?.slug} className="text-gray-400 hover:underline text-xs" target="_blank">View</Link>
+                    <Link href={`/admin/reviews/new?edit=${review.id}`} className="text-indigo-600 hover:underline text-xs mr-4">Edit</Link>
+                    <Link href={`/games/${review.games?.slug}`} className="text-gray-400 hover:underline text-xs" target="_blank">View</Link>
                   </td>
                 </tr>
               ))}
@@ -58,5 +57,5 @@ export default async function AdminReviewsPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

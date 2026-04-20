@@ -1,24 +1,24 @@
-import { createClient } from "@/lib/supabase/server";
-import { CommunityModerationClient } from "@/components/admin/CommunityModerationClient";
+import { createClient } from "@/lib/supabase/server"
+import { CommunityModerationClient } from "@/components/admin/CommunityModerationClient"
 
 export default async function AdminCommunityPage({
   searchParams,
 }: {
-  searchParams: { tab?: string };
+  searchParams: { tab?: string }
 }) {
-  const supabase = await createClient();
-  const tab = searchParams.tab === "flagged" ? "flagged" : "all";
+  const supabase = await createClient()
+  const tab = searchParams.tab === "flagged" ? "flagged" : "all"
 
   const { data: reviewsData } = await supabase
     .from("community_reviews_with_votes")
     .select("*, games(title, slug)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
 
   const { data: flagsData } = await supabase
     .from("flagged_reviews")
-    .select("*, community_reviews(id, body, score, game_id, user_id), profiles(username)")
+    .select("*, community_reviews(id, body, score), profiles(username)")
     .eq("resolved", false)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
 
   return (
     <div>
@@ -29,5 +29,5 @@ export default async function AdminCommunityPage({
         defaultTab={tab}
       />
     </div>
-  );
+  )
 }
