@@ -4,10 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 export default async function AdminGamesPage() {
   const supabase = await createClient();
 
-  const { data: games } = await supabase
-    .from("games")
-    .select("*, editor_reviews(score_overall)")
-    .order("created_at", { ascending: false });
+  const { data: gamesData } = await supabase
+  .from("games")
+  .select("*, editor_reviews(score_overall)")
+  .order("created_at", { ascending: false });
+
+  const games = (gamesData ?? []) as any[];
 
   return (
     <div>
