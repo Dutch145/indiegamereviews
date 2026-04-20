@@ -37,6 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/games", label: "Games" },
     { href: "/admin/reviews", label: "Editor reviews" },
     { href: "/admin/community", label: "Community reviews" },
+    { href: "/admin/requests", label: "Game requests" },
   ]
 
   return (
@@ -53,7 +54,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <aside className="w-52 min-h-[calc(100vh-3.5rem)] bg-white border-r border-gray-200 py-6 px-3 flex-shrink-0">
           <nav className="space-y-1">
             {navItems.map(({ href, label }) => (
-              <Link key={href} href={href} className={`block px-3 py-2 rounded-lg text-sm transition-colors ${pathname === href ? "bg-indigo-50 text-indigo-600 font-medium" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
+              <Link
+                key={href}
+                href={href}
+                className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                  pathname === href
+                    ? "bg-indigo-50 text-indigo-600 font-medium"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+              >
                 {label}
               </Link>
             ))}

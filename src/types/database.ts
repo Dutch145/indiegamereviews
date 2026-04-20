@@ -123,6 +123,51 @@ export type Database = {
         }
         Relationships: []
       }
+      game_requests: {
+        Row: {
+          id: string
+          title: string
+          user_id: string
+          votes: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          user_id: string
+          votes?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          user_id?: string
+          votes?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
+      game_request_votes: {
+        Row: {
+          id: string
+          request_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          request_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          request_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       games: {
         Row: {
           banner_url: string | null
@@ -263,4 +308,6 @@ export type EditorReview = Database["public"]["Tables"]["editor_reviews"]["Row"]
 export type CommunityReview = Database["public"]["Tables"]["community_reviews"]["Row"]
 export type FlaggedReview = Database["public"]["Tables"]["flagged_reviews"]["Row"]
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+export type GameRequest = Database["public"]["Tables"]["game_requests"]["Row"]
+export type GameRequestVote = Database["public"]["Tables"]["game_request_votes"]["Row"]
 export type CommunityReviewWithVotes = Database["public"]["Views"]["community_reviews_with_votes"]["Row"]
