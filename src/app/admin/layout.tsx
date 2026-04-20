@@ -18,14 +18,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (!user) { router.replace("/auth/login"); return; }
 
       const { data: profileData } = await supabase
-    .from("profiles")
-    .select("is_admin, username")
-    .eq("id", user.id)
-    .single();
+        .from("profiles")
+        .select("is_admin, username")
+        .eq("id", user.id)
+        .single();
 
-  const profile = profileData as any;
-  if (!profile?.is_admin) { router.replace("/"); return; }
-  setUsername(profile.username);
+      const profile = profileData as any;
+      if (!profile?.is_admin) { router.replace("/"); return; }
+      setUsername(profile.username);
       setReady(true);
     }
     check();
@@ -60,17 +60,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <nav className="space-y-1">
             {navItems.map(({ href, label }) => (
               <Link key={href} href={href}
-                className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={"block px-3 py-2 rounded-lg text-sm transition-colors " + (
                   pathname === href
                     ? "bg-indigo-50 text-indigo-600 font-medium"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                }`}>
+                )}>
                 {label}
               </Link>
             ))}
           </nav>
         </aside>
-
         <main className="flex-1 p-8">{children}</main>
       </div>
     </div>

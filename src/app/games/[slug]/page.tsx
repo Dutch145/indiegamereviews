@@ -14,17 +14,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
 
-  const { data: game } = await supabase
+  const { data: gameData } = await supabase
     .from("games")
     .select("title, developer, description, cover_url, genres")
     .eq("slug", slug)
     .single();
 
+  const game = gameData as any;
   if (!game) return { title: "Game not found" };
 
-  const title = `${game.title} Review`;
+  const title = game.title + " Review";
   const description = game.description
-    ?? `Read the IndieScope review of ${game.title} by ${game.developer}. Community scores, editor verdict, and more.`;
+    ?? ("Read the IndieScout review of " + game.title + " by " + game.developer + ". Community scores, editor verdict, and more.");
 
   return {
     title,
@@ -75,10 +76,7 @@ export default async function GamePage({ params }: Props) {
 
   const communityReviews = (communityReviewsData ?? []) as CommunityReviewWithVotes[];
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   const userReview = communityReviews.find((r) => r.user_id === user?.id) ?? null;
 
   return (
