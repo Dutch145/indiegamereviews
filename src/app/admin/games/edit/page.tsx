@@ -31,7 +31,7 @@ export default function EditGamePage() {
 
   useEffect(() => {
     if (!id) return;
-    supabase.from("games").select("*").eq("id", id).single().then(({ data: gameData }) => {
+    supabase.from("games").select("*").eq("id", id).single().then(({ data: gameData }: any) => {
       const data = gameData as any;
       if (data) {
         setTitle(data.title);
