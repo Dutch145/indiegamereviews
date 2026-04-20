@@ -36,7 +36,7 @@ export default function NewGamePage() {
     setLoading(true);
     setError(null);
 
-    const { error: err } = await supabase.from("games").insert({
+    const { error: err } = await (supabase as any).from("games").insert({
       title: title.trim(), slug, developer: developer.trim(),
       publisher: publisher.trim() || null,
       release_year: releaseYear ? parseInt(releaseYear) : null,
