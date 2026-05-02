@@ -20,63 +20,56 @@ export function CommunityReviewList({ gameId, reviews, userReview }: Props) {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null))
     return () => listener.subscription.unsubscribe()
   }, [])
 
   const avgScore = reviews.length
     ? (reviews.reduce((sum, r) => sum + (r.score ?? 0), 0) / reviews.length).toFixed(1)
     : null
-
   const currentUserReview = userReview ?? reviews.find((r) => r.user_id === user?.id) ?? null
 
   return (
-    <section>
-      <div className="flex items-center justify-between mb-4">
+    <div style={{ background: "#fff", border: "1px solid rgba(109,40,217,0.12)", borderRadius: "16px", padding: "24px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
         <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-gray-400">
-            Community reviews
-            <span className="font-normal text-gray-300 ml-2">· {reviews.length} reviews</span>
-          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <div style={{ width: "3px", height: "14px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
+            <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#6d60c0" }}>
+              Community reviews <span style={{ color: "#9d8fc0", fontWeight: 400 }}>· {reviews.length}</span>
+            </p>
+          </div>
           {avgScore && (
-            <p className="text-sm mt-0.5">
-              <span className="font-medium">{avgScore}</span>
-              <span className="text-gray-400 ml-1">avg community score</span>
+            <p style={{ fontSize: "13px", color: "#6d60c0", paddingLeft: "11px" }}>
+              <span style={{ fontWeight: 700, color: "#7c3aed" }}>{avgScore}</span> avg score
             </p>
           )}
         </div>
         {user && !currentUserReview && (
-          <button onClick={() => setShowForm((v) => !v)} className="text-sm px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+          <button onClick={() => setShowForm((v) => !v)} style={{ fontSize: "13px", fontWeight: 600, color: showForm ? "#6d60c0" : "#7c3aed", background: showForm ? "rgba(109,40,217,0.04)" : "rgba(124,58,237,0.08)", border: `1px solid ${showForm ? "rgba(109,40,217,0.1)" : "rgba(124,58,237,0.25)"}`, padding: "8px 16px", borderRadius: "8px", cursor: "pointer" }}>
             {showForm ? "Cancel" : "Write a review"}
           </button>
         )}
         {!user && (
-          <a href="/auth/login" className="text-sm text-indigo-600 hover:underline">Sign in to review</a>
+          <a href="/auth/login" style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", textDecoration: "none" }}>Sign in to review</a>
         )}
       </div>
 
       {showForm && user && (
-        <div className="mb-6">
+        <div style={{ marginBottom: "24px" }}>
           <ReviewForm gameId={gameId} userId={user.id} onSuccess={() => setShowForm(false)} />
         </div>
       )}
 
       {reviews.length === 0 ? (
-        <p className="text-gray-400 text-sm py-8 text-center">No community reviews yet — be the first!</p>
+        <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No community reviews yet — be the first!</p>
       ) : (
-        <div className="divide-y divide-gray-100">
+        <div>
           {reviews.map((review) => (
-            <CommunityReviewCard
-              key={review.id}
-              review={review}
-              isOwn={review.user_id === user?.id}
-              currentUserId={user?.id ?? null}
-            />
+            <CommunityReviewCard key={review.id} review={review} isOwn={review.user_id === user?.id} currentUserId={user?.id ?? null} />
           ))}
         </div>
       )}
-    </section>
+    </div>
   )
 }

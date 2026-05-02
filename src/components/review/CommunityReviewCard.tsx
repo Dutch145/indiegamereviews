@@ -17,14 +17,11 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
   const [voted, setVoted] = useState(false)
   const [flagged, setFlagged] = useState(false)
   const supabase = createClient()
+  const sc = scoreColor(review.score ?? 0)
 
   async function vote(helpful: boolean) {
     if (!currentUserId || voted) return
-    await supabase.from("helpful_votes").upsert({
-      review_id: review.id!,
-      user_id: currentUserId,
-      helpful,
-    })
+    await supabase.from("helpful_votes").upsert({ review_id: review.id!, user_id: currentUserId, helpful })
     if (helpful) setHelpfulYes((v: number) => v + 1)
     else setHelpfulNo((v: number) => v + 1)
     setVoted(true)
@@ -32,11 +29,7 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
 
   async function flagReview() {
     if (!currentUserId || flagged) return
-    await supabase.from("flagged_reviews").upsert({
-      review_id: review.id!,
-      flagged_by: currentUserId,
-      reason: null,
-    })
+    await supabase.from("flagged_reviews").upsert({ review_id: review.id!, flagged_by: currentUserId, reason: null })
     setFlagged(true)
   }
 
@@ -45,46 +38,46 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
   const hasCons = review.cons && review.cons.length > 0
 
   return (
-    <div className="py-5">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-800 flex items-center justify-center text-xs font-medium flex-shrink-0">
+    <div style={{ paddingTop: "20px", paddingBottom: "20px", borderBottom: "1px solid rgba(109,40,217,0.08)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+        <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "#7c3aed", flexShrink: 0 }}>
           {initials}
         </div>
-        <div className="flex-1">
-          <p className="text-sm font-medium">
-            {review.username ?? "Anonymous"}{" "}
-            {isOwn && <span className="text-xs text-gray-400 font-normal">(you)</span>}
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: "#1e1b4b" }}>
+            {review.username ?? "Anonymous"}
+            {isOwn && <span style={{ fontSize: "11px", color: "#9d8fc0", fontWeight: 400, marginLeft: "6px" }}>(you)</span>}
           </p>
-          <p className="text-xs text-gray-400">{review.created_at ? formatDate(review.created_at) : ""}</p>
+          <p style={{ fontSize: "11px", color: "#9d8fc0" }}>{review.created_at ? formatDate(review.created_at) : ""}</p>
         </div>
-        <span className={`text-sm font-semibold px-2.5 py-1 rounded-lg ${scoreColor(review.score ?? 0)}`}>
+        <div style={{ padding: "4px 10px", borderRadius: "8px", background: sc.bg, border: `1px solid ${sc.color}33`, fontSize: "14px", fontWeight: 700, color: sc.color }}>
           {review.score}
-        </span>
+        </div>
       </div>
 
-      <p className="text-sm text-gray-600 leading-relaxed mb-3">{review.body}</p>
+      <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.7, marginBottom: hasPros || hasCons ? "12px" : "0" }}>{review.body}</p>
 
       {(hasPros || hasCons) && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div style={{ display: "grid", gridTemplateColumns: hasPros && hasCons ? "1fr 1fr" : "1fr", gap: "10px", marginBottom: "12px" }}>
           {hasPros && (
-            <div className="bg-green-50 rounded-lg p-3 border border-green-100">
-              <p className="text-xs font-medium text-green-700 mb-2">Pros</p>
-              <ul className="space-y-1">
+            <div style={{ background: "rgba(52,211,153,0.05)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: "10px", padding: "12px" }}>
+              <p style={{ fontSize: "10px", fontWeight: 700, color: "#059669", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Pros</p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
                 {review.pros!.map((pro: string, i: number) => (
-                  <li key={i} className="text-xs text-green-800 flex items-start gap-1.5">
-                    <span className="text-green-500 flex-shrink-0">+</span>{pro}
+                  <li key={i} style={{ fontSize: "13px", color: "#065f46", display: "flex", gap: "6px" }}>
+                    <span style={{ color: "#10b981" }}>+</span>{pro}
                   </li>
                 ))}
               </ul>
             </div>
           )}
           {hasCons && (
-            <div className="bg-red-50 rounded-lg p-3 border border-red-100">
-              <p className="text-xs font-medium text-red-700 mb-2">Cons</p>
-              <ul className="space-y-1">
+            <div style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: "10px", padding: "12px" }}>
+              <p style={{ fontSize: "10px", fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Cons</p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
                 {review.cons!.map((con: string, i: number) => (
-                  <li key={i} className="text-xs text-red-800 flex items-start gap-1.5">
-                    <span className="text-red-400 flex-shrink-0">−</span>{con}
+                  <li key={i} style={{ fontSize: "13px", color: "#7f1d1d", display: "flex", gap: "6px" }}>
+                    <span style={{ color: "#f87171" }}>−</span>{con}
                   </li>
                 ))}
               </ul>
@@ -94,17 +87,11 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
       )}
 
       {!isOwn && currentUserId && (
-        <div className="flex items-center gap-3 mt-2">
-          <span className="text-xs text-gray-400">Helpful?</span>
-          <button onClick={() => vote(true)} disabled={voted} className="text-xs px-3 py-1 rounded border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50">
-            Yes ({helpfulYes})
-          </button>
-          <button onClick={() => vote(false)} disabled={voted} className="text-xs px-3 py-1 rounded border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50">
-            No ({helpfulNo})
-          </button>
-          <button onClick={flagReview} disabled={flagged} className="ml-auto text-xs text-gray-300 hover:text-amber-500 transition-colors disabled:opacity-50">
-            {flagged ? "Flagged" : "Flag"}
-          </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "10px" }}>
+          <span style={{ fontSize: "11px", color: "#9d8fc0" }}>Helpful?</span>
+          <button onClick={() => vote(true)} disabled={voted} style={{ fontSize: "11px", fontWeight: 600, color: "#6d60c0", background: "rgba(109,40,217,0.06)", border: "1px solid rgba(109,40,217,0.12)", padding: "4px 10px", borderRadius: "6px", cursor: voted ? "default" : "pointer", opacity: voted ? 0.5 : 1 }}>Yes ({helpfulYes})</button>
+          <button onClick={() => vote(false)} disabled={voted} style={{ fontSize: "11px", fontWeight: 600, color: "#6d60c0", background: "rgba(109,40,217,0.06)", border: "1px solid rgba(109,40,217,0.12)", padding: "4px 10px", borderRadius: "6px", cursor: voted ? "default" : "pointer", opacity: voted ? 0.5 : 1 }}>No ({helpfulNo})</button>
+          <button onClick={flagReview} disabled={flagged} style={{ marginLeft: "auto", fontSize: "11px", color: flagged ? "#fbbf24" : "#c4b5fd", background: "none", border: "none", cursor: flagged ? "default" : "pointer" }}>{flagged ? "Flagged" : "Flag"}</button>
         </div>
       )}
     </div>

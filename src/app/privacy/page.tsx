@@ -9,31 +9,31 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   const section = (title: string, children: React.ReactNode) => (
     <div style={{ marginBottom: "36px" }}>
-      <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#fff", marginBottom: "12px", letterSpacing: "-0.3px" }}>{title}</h2>
-      <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.5)", lineHeight: 1.8 }}>{children}</div>
+      <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1e1b4b", marginBottom: "12px", letterSpacing: "-0.3px" }}>{title}</h2>
+      <div style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.8 }}>{children}</div>
     </div>
   )
 
   return (
     <div style={{ maxWidth: "720px", margin: "0 auto", paddingTop: "48px", paddingBottom: "64px" }}>
       <div style={{ marginBottom: "40px" }}>
-        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(167,139,250,0.6)", textDecoration: "none" }}>← Back to IndieScout</Link>
-        <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#fff", letterSpacing: "-1px", marginTop: "16px", marginBottom: "8px" }}>Privacy Policy</h1>
-        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.25)" }}>Last updated: May 2, 2026</p>
+        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", textDecoration: "none" }}>← Back to IndieScout</Link>
+        <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#1e1b4b", letterSpacing: "-1px", marginTop: "16px", marginBottom: "8px" }}>Privacy Policy</h1>
+        <p style={{ fontSize: "13px", color: "#6d60c0" }}>Last updated: May 2, 2026</p>
       </div>
 
-      <div style={{ background: "rgba(167,139,250,0.05)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: "12px", padding: "16px 20px", marginBottom: "36px" }}>
-        <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-          This Privacy Policy explains how IndieScout (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects, uses, and protects information about you when you use our website at <a href="https://indiescout.xyz" style={{ color: "#a78bfa", textDecoration: "none" }}>indiescout.xyz</a>. By using IndieScout, you agree to the practices described in this policy.
+      <div style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "12px", padding: "16px 20px", marginBottom: "36px" }}>
+        <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.7 }}>
+          This Privacy Policy explains how IndieScout (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects, uses, and protects information about you when you use our website at <a href="https://indiescout.xyz" style={{ color: "#7c3aed", textDecoration: "none", fontWeight: 600 }}>indiescout.xyz</a>. By using IndieScout, you agree to the practices described in this policy.
         </p>
       </div>
 
       {section("1. Information We Collect", <>
         <p style={{ marginBottom: "12px" }}>We collect the following types of information:</p>
-        <p style={{ marginBottom: "8px" }}><strong style={{ color: "rgba(255,255,255,0.7)" }}>Account information:</strong> When you create an account, we collect your email address and username. This information is required to provide you with an account and is stored securely.</p>
-        <p style={{ marginBottom: "8px" }}><strong style={{ color: "rgba(255,255,255,0.7)" }}>User-generated content:</strong> Reviews, scores, pros and cons, and game suggestions you submit are stored and displayed publicly on the site.</p>
-        <p style={{ marginBottom: "8px" }}><strong style={{ color: "rgba(255,255,255,0.7)" }}>Usage data:</strong> We may collect standard web server logs including IP addresses, browser type, pages visited, and timestamps. This data is used to maintain and improve the site.</p>
-        <p><strong style={{ color: "rgba(255,255,255,0.7)" }}>Cookies:</strong> We use cookies and similar technologies to maintain your login session. We do not use third-party advertising cookies.</p>
+        <p style={{ marginBottom: "8px" }}><strong style={{ color: "#1e1b4b" }}>Account information:</strong> When you create an account, we collect your email address and username. This information is required to provide you with an account and is stored securely.</p>
+        <p style={{ marginBottom: "8px" }}><strong style={{ color: "#1e1b4b" }}>User-generated content:</strong> Reviews, scores, pros and cons, and game suggestions you submit are stored and displayed publicly on the site.</p>
+        <p style={{ marginBottom: "8px" }}><strong style={{ color: "#1e1b4b" }}>Usage data:</strong> We may collect standard web server logs including IP addresses, browser type, pages visited, and timestamps. This data is used to maintain and improve the site.</p>
+        <p><strong style={{ color: "#1e1b4b" }}>Cookies:</strong> We use cookies and similar technologies to maintain your login session. We do not use third-party advertising cookies.</p>
       </>)}
 
       {section("2. How We Use Your Information", <>
@@ -68,9 +68,9 @@ export default function PrivacyPage() {
       {section("5. Third-Party Services", <>
         <p style={{ marginBottom: "8px" }}>IndieScout uses the following third-party services to operate:</p>
         <ul style={{ paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "6px" }}>
-          <li><strong style={{ color: "rgba(255,255,255,0.7)" }}>Supabase</strong> — database, authentication, and user management</li>
-          <li><strong style={{ color: "rgba(255,255,255,0.7)" }}>Vercel</strong> — website hosting and deployment</li>
-          <li><strong style={{ color: "rgba(255,255,255,0.7)" }}>Amazon Web Services (AWS SES)</strong> — transactional email delivery</li>
+          <li><strong style={{ color: "#1e1b4b" }}>Supabase</strong> — database, authentication, and user management</li>
+          <li><strong style={{ color: "#1e1b4b" }}>Vercel</strong> — website hosting and deployment</li>
+          <li><strong style={{ color: "#1e1b4b" }}>Amazon Web Services (AWS SES)</strong> — transactional email delivery</li>
         </ul>
         <p style={{ marginTop: "12px" }}>Each of these providers has their own privacy policies and data handling practices. We encourage you to review their policies for more information.</p>
       </>)}
@@ -107,15 +107,15 @@ export default function PrivacyPage() {
 
       {section("11. Contact Us", <>
         <p>If you have any questions about this Privacy Policy or how we handle your data, please contact us at:</p>
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "10px", padding: "16px 20px", marginTop: "12px" }}>
-          <p style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)", marginBottom: "4px" }}>IndieScout</p>
-          <p>Website: <a href="https://indiescout.xyz" style={{ color: "#a78bfa", textDecoration: "none" }}>indiescout.xyz</a></p>
+        <div style={{ background: "rgba(255,255,255,0.8)", border: "1px solid rgba(109,40,217,0.15)", borderRadius: "10px", padding: "16px 20px", marginTop: "12px" }}>
+          <p style={{ fontWeight: 700, color: "#1e1b4b", marginBottom: "4px" }}>IndieScout</p>
+          <p>Website: <a href="https://indiescout.xyz" style={{ color: "#7c3aed", textDecoration: "none", fontWeight: 600 }}>indiescout.xyz</a></p>
         </div>
       </>)}
 
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "24px", display: "flex", gap: "20px" }}>
-        <Link href="/terms" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(167,139,250,0.6)", textDecoration: "none" }}>Terms of Service</Link>
-        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Back to home</Link>
+      <div style={{ borderTop: "1px solid rgba(109,40,217,0.15)", paddingTop: "24px", display: "flex", gap: "20px" }}>
+        <Link href="/terms" style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", textDecoration: "none" }}>Terms of Service</Link>
+        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "#6d60c0", textDecoration: "none" }}>Back to home</Link>
       </div>
     </div>
   )

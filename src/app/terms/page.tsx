@@ -9,22 +9,22 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   const section = (title: string, children: React.ReactNode) => (
     <div style={{ marginBottom: "36px" }}>
-      <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#fff", marginBottom: "12px", letterSpacing: "-0.3px" }}>{title}</h2>
-      <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.5)", lineHeight: 1.8 }}>{children}</div>
+      <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1e1b4b", marginBottom: "12px", letterSpacing: "-0.3px" }}>{title}</h2>
+      <div style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.8 }}>{children}</div>
     </div>
   )
 
   return (
     <div style={{ maxWidth: "720px", margin: "0 auto", paddingTop: "48px", paddingBottom: "64px" }}>
       <div style={{ marginBottom: "40px" }}>
-        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(167,139,250,0.6)", textDecoration: "none" }}>← Back to IndieScout</Link>
-        <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#fff", letterSpacing: "-1px", marginTop: "16px", marginBottom: "8px" }}>Terms of Service</h1>
-        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.25)" }}>Last updated: May 2, 2026</p>
+        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", textDecoration: "none" }}>← Back to IndieScout</Link>
+        <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#1e1b4b", letterSpacing: "-1px", marginTop: "16px", marginBottom: "8px" }}>Terms of Service</h1>
+        <p style={{ fontSize: "13px", color: "#6d60c0" }}>Last updated: May 2, 2026</p>
       </div>
 
-      <div style={{ background: "rgba(167,139,250,0.05)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: "12px", padding: "16px 20px", marginBottom: "36px" }}>
-        <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-          These Terms of Service (&quot;Terms&quot;) govern your use of IndieScout, operated at <a href="https://indiescout.xyz" style={{ color: "#a78bfa", textDecoration: "none" }}>indiescout.xyz</a>. By accessing or using IndieScout, you agree to be bound by these Terms. If you do not agree, please do not use the site.
+      <div style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "12px", padding: "16px 20px", marginBottom: "36px" }}>
+        <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.7 }}>
+          These Terms of Service (&quot;Terms&quot;) govern your use of IndieScout, operated at <a href="https://indiescout.xyz" style={{ color: "#7c3aed", textDecoration: "none", fontWeight: 600 }}>indiescout.xyz</a>. By accessing or using IndieScout, you agree to be bound by these Terms. If you do not agree, please do not use the site.
         </p>
       </div>
 
@@ -121,15 +121,15 @@ export default function TermsPage() {
 
       {section("14. Contact Us", <>
         <p>If you have any questions about these Terms, please contact us at:</p>
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "10px", padding: "16px 20px", marginTop: "12px" }}>
-          <p style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)", marginBottom: "4px" }}>IndieScout</p>
-          <p>Website: <a href="https://indiescout.xyz" style={{ color: "#a78bfa", textDecoration: "none" }}>indiescout.xyz</a></p>
+        <div style={{ background: "rgba(255,255,255,0.8)", border: "1px solid rgba(109,40,217,0.15)", borderRadius: "10px", padding: "16px 20px", marginTop: "12px" }}>
+          <p style={{ fontWeight: 700, color: "#1e1b4b", marginBottom: "4px" }}>IndieScout</p>
+          <p>Website: <a href="https://indiescout.xyz" style={{ color: "#7c3aed", textDecoration: "none", fontWeight: 600 }}>indiescout.xyz</a></p>
         </div>
       </>)}
 
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "24px", display: "flex", gap: "20px" }}>
-        <Link href="/privacy" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(167,139,250,0.6)", textDecoration: "none" }}>Privacy Policy</Link>
-        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Back to home</Link>
+      <div style={{ borderTop: "1px solid rgba(109,40,217,0.15)", paddingTop: "24px", display: "flex", gap: "20px" }}>
+        <Link href="/privacy" style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", textDecoration: "none" }}>Privacy Policy</Link>
+        <Link href="/" style={{ fontSize: "13px", fontWeight: 600, color: "#6d60c0", textDecoration: "none" }}>Back to home</Link>
       </div>
     </div>
   )
