@@ -54,7 +54,12 @@ export function AdminSubmissionsClient({ submissions: initial }: { submissions: 
   async function updateStatus(id: string, status: string) {
     if (!confirm(`Mark this submission as ${status}?`)) return
     setLoading(id)
-    await (supabase as any).from("developer_submissions").update({ status }).eq("id", id)
+    const res = await fetch("/api/admin/update-submission", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status }),
+    })
+    if (!res.ok) { alert("Failed to update. Check console."); setLoading(null); return }
     setSubmissions((prev) => prev.map((s) => s.id === id ? { ...s, status } : s))
     setLoading(null)
   }

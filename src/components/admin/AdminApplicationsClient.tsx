@@ -46,14 +46,12 @@ export function AdminApplicationsClient({ applications: initial }: { application
   async function handleApprove(app: Application) {
     if (!confirm(`Approve ${app.username} as a reviewer? This will grant them reviewer access on the site.`)) return
     setLoading(app.id)
-
-    // Find user by username and grant reviewer role
-    const { data: profile } = await supabase.from("profiles").select("id").eq("username", app.username).single()
-    if (profile) {
-      await supabase.from("profiles").update({ is_reviewer: true }).eq("id", profile.id)
-    }
-
-    await (supabase as any).from("reviewer_applications").update({ status: "approved" }).eq("id", app.id)
+    const res = await fetch("/api/admin/update-application", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: app.id, status: "approved", username: app.username }),
+    })
+    if (!res.ok) { alert("Failed to approve. Check console."); setLoading(null); return }
     setApplications((prev) => prev.map((a) => a.id === app.id ? { ...a, status: "approved" } : a))
     setLoading(null)
   }
@@ -61,7 +59,12 @@ export function AdminApplicationsClient({ applications: initial }: { application
   async function handleReject(app: Application) {
     if (!confirm(`Reject ${app.username}'s application?`)) return
     setLoading(app.id)
-    await (supabase as any).from("reviewer_applications").update({ status: "rejected" }).eq("id", app.id)
+    const res = await fetch("/api/admin/update-application", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: app.id, status: "rejected", username: app.username }),
+    })
+    if (!res.ok) { alert("Failed to reject. Check console."); setLoading(null); return }
     setApplications((prev) => prev.map((a) => a.id === app.id ? { ...a, status: "rejected" } : a))
     setLoading(null)
   }
