@@ -18,12 +18,15 @@ export function GameGrid({ games, pageSize = 6 }: Props) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="games-grid-inner" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "12px" }}>
         {visible.map((game) => <GameCard key={game.id} game={game} />)}
       </div>
       {hasMore && (
-        <div className="mt-8 text-center">
-          <button onClick={() => setShowing((v) => v + pageSize)} className="px-6 py-2.5 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors">
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <button
+            onClick={() => setShowing((v) => v + pageSize)}
+            style={{ fontSize: "13px", fontWeight: 600, color: "#7c3aed", background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.2)", padding: "10px 24px", borderRadius: "8px", cursor: "pointer", width: "100%", maxWidth: "300px" }}
+          >
             Load more ({games.length - showing} remaining)
           </button>
         </div>

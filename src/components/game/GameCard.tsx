@@ -8,39 +8,37 @@ interface Props {
 
 export function GameCard({ game }: Props) {
   const score = game.editor_reviews?.[0]?.score_overall ?? null
+  const sc = score !== null ? scoreColor(score) : null
 
   return (
-    <Link href={`/games/${game.slug}`} className="block group">
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-        <div className="relative">
+    <Link href={`/games/${game.slug}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+      <div style={{
+        background: "#fff",
+        border: "1px solid rgba(109,40,217,0.1)",
+        borderRadius: "12px", overflow: "hidden",
+        height: "100%",
+        boxShadow: "0 2px 8px rgba(109,40,217,0.06)",
+      }}>
+        <div style={{ position: "relative", height: "130px" }}>
           {game.cover_url ? (
-            <div className="h-40 bg-gray-100">
-              <img src={game.cover_url} alt={game.title} className="w-full h-full object-cover" />
-            </div>
+            <img src={game.cover_url} alt={game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            <div className="h-40 bg-gradient-to-br from-indigo-900 to-indigo-600 flex items-center justify-center">
-              <span className="text-white/40 text-4xl font-bold">{game.title[0]}</span>
+            <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.1))", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: "32px", fontWeight: 800, color: "rgba(124,58,237,0.3)" }}>{game.title[0]}</span>
             </div>
           )}
-          {score !== null && (
-            <div className="absolute top-2 right-2">
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-white/90 text-indigo-600 border border-indigo-100">Reviewed</span>
+          {sc && (
+            <div style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(255,255,255,0.92)", backdropFilter: "blur(4px)", border: `1px solid ${sc.color}33`, borderRadius: "6px", padding: "2px 7px", fontSize: "12px", fontWeight: 700, color: sc.color }}>
+              {score}
             </div>
           )}
         </div>
-        <div className="p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h2 className="font-medium group-hover:text-indigo-600 transition-colors">{game.title}</h2>
-              <p className="text-sm text-gray-400">{game.developer}</p>
-            </div>
-            {score !== null && (
-              <span className={`text-sm font-semibold px-2 py-1 rounded-lg flex-shrink-0 ${scoreColor(score)}`}>{score}</span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-1 mt-3">
-            {(game.genres ?? []).slice(0, 3).map((g: string) => (
-              <span key={g} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{g}</span>
+        <div style={{ padding: "10px 12px" }}>
+          <p style={{ fontSize: "13px", fontWeight: 700, color: "#1e1b4b", marginBottom: "2px", lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{game.title}</p>
+          <p style={{ fontSize: "11px", color: "#9d8fc0", marginBottom: "7px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{game.developer}</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+            {(game.genres ?? []).slice(0, 2).map((g: string) => (
+              <span key={g} style={{ fontSize: "10px", fontWeight: 600, color: "#7c3aed", background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.15)", padding: "2px 6px", borderRadius: "4px" }}>{g}</span>
             ))}
           </div>
         </div>

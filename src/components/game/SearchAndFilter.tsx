@@ -33,43 +33,59 @@ export function SearchAndFilter({ games, allGenres, alwaysOpen = false }: Props)
 
   if (!isOpen) {
     return (
-      <button onClick={() => setIsOpen(true)} className="w-full text-left px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-400 hover:border-gray-300 transition-colors">
+      <button
+        onClick={() => setIsOpen(true)}
+        style={{ width: "100%", textAlign: "left", padding: "12px 16px", background: "rgba(124,58,237,0.04)", border: "1px solid rgba(124,58,237,0.15)", borderRadius: "10px", fontSize: "14px", color: "#9d8fc0", cursor: "pointer" }}
+      >
         Search games by title or developer...
       </button>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-3">
-        <input autoFocus={!alwaysOpen} type="text" placeholder="Search by title or developer..." value={query} onChange={(e) => setQuery(e.target.value)} className="flex-1 text-sm rounded-xl border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" />
-        <select value={sort} onChange={(e) => setSort(e.target.value as SortOption)} className="text-sm rounded-xl border border-gray-200 px-3 py-2.5 bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <input
+          autoFocus={!alwaysOpen}
+          type="text"
+          placeholder="Search by title or developer..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{ flex: 1, minWidth: "160px", fontSize: "14px", background: "#faf8ff", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "10px 14px", color: "#1e1b4b", outline: "none" }}
+        />
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          style={{ fontSize: "13px", background: "#faf8ff", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "10px 12px", color: "#6d60c0", outline: "none", cursor: "pointer", flexShrink: 0 }}
+        >
           <option value="newest">Newest</option>
-          <option value="score">Highest score</option>
+          <option value="score">Top rated</option>
           <option value="az">A–Z</option>
         </select>
         {!alwaysOpen && (
-          <button onClick={() => { setIsOpen(false); setQuery(""); setSelectedGenre(null); setSort("newest") }} className="text-sm px-4 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">Cancel</button>
+          <button onClick={() => { setIsOpen(false); setQuery(""); setSelectedGenre(null); setSort("newest") }} style={{ fontSize: "13px", fontWeight: 600, color: "#9d8fc0", background: "rgba(124,58,237,0.04)", border: "1px solid rgba(124,58,237,0.1)", padding: "10px 14px", borderRadius: "10px", cursor: "pointer", flexShrink: 0 }}>✕</button>
         )}
       </div>
       {allGenres.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
           {allGenres.map((genre: string) => (
-            <button key={genre} onClick={() => setSelectedGenre(selectedGenre === genre ? null : genre)} className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${selectedGenre === genre ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"}`}>
-              {genre}
-            </button>
+            <button
+              key={genre}
+              onClick={() => setSelectedGenre(selectedGenre === genre ? null : genre)}
+              style={{ fontSize: "11px", fontWeight: 600, padding: "5px 10px", borderRadius: "6px", cursor: "pointer", background: selectedGenre === genre ? "rgba(124,58,237,0.12)" : "rgba(124,58,237,0.04)", border: selectedGenre === genre ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(124,58,237,0.12)", color: selectedGenre === genre ? "#7c3aed" : "#9d8fc0" }}
+            >{genre}</button>
           ))}
         </div>
       )}
       {filtered.length > 0 ? (
         <div>
-          <p className="text-xs text-gray-400 mb-3">{filtered.length} game{filtered.length !== 1 ? "s" : ""} found</p>
+          <p style={{ fontSize: "12px", color: "#9d8fc0", marginBottom: "10px" }}>{filtered.length} game{filtered.length !== 1 ? "s" : ""} found</p>
           <GameGrid games={filtered} pageSize={12} />
         </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-400 text-sm">No games found.</p>
-          <button onClick={() => { setQuery(""); setSelectedGenre(null) }} className="text-indigo-600 text-sm hover:underline mt-2 block mx-auto">Clear filters</button>
+        <div style={{ textAlign: "center", padding: "32px 0" }}>
+          <p style={{ color: "#9d8fc0", fontSize: "14px" }}>No games found.</p>
+          <button onClick={() => { setQuery(""); setSelectedGenre(null) }} style={{ color: "#7c3aed", fontSize: "13px", background: "none", border: "none", cursor: "pointer", marginTop: "8px" }}>Clear filters</button>
         </div>
       )}
     </div>

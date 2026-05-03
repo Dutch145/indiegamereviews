@@ -36,8 +36,30 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ── Mobile responsive ── */
+@media (max-width: 768px) {
+  .desktop-nav { display: none !important; }
+  .mobile-menu-btn { display: flex !important; }
+  .hero-flex { flex-direction: column !important; }
+  .hero-image { width: 100% !important; height: 200px !important; }
+  .score-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .two-col { grid-template-columns: 1fr !important; }
+  .admin-sidebar { display: none !important; }
+  .admin-mobile-nav { display: flex !important; }
+  .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+  .hide-mobile { display: none !important; }
+}
+
+@media (max-width: 480px) {
+  .games-grid-inner { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+}
+
+/* Prevent iOS input zoom */
+@media (max-width: 768px) {
+  input, select, textarea { font-size: 16px !important; }
+}
+
+/* Better tap targets */
+@media (max-width: 768px) {
+  button, a { min-height: 40px; }
 }

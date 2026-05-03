@@ -9,6 +9,7 @@ import type { Profile } from "@/types/database"
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
   const [username, setUsername] = useState("")
+  const [navOpen, setNavOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
@@ -26,9 +27,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     check()
   }, [])
 
+  useEffect(() => { setNavOpen(false) }, [pathname])
+
   if (!ready) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-sm text-gray-400">Loading...</p>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <p style={{ fontSize: "14px", color: "#6d60c0" }}>Loading...</p>
     </div>
   )
 
@@ -40,35 +43,52 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/requests", label: "Game requests" },
   ]
 
+  const currentLabel = navItems.find((n) => n.href === pathname)?.label ?? "Admin"
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="font-semibold text-indigo-600">IndieScout</Link>
-          <span className="text-gray-300 text-sm">/</span>
-          <span className="text-sm font-medium text-gray-700">Admin</span>
+    <div style={{ minHeight: "100vh", background: "#f3f0ff" }}>
+      <header style={{ background: "rgba(10,10,26,0.97)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 16px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Link href="/" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 800, background: "linear-gradient(135deg, #a78bfa, #60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>IndieScout</Link>
+          <span style={{ color: "rgba(255,255,255,0.2)" }}>/</span>
+          {/* Mobile: show dropdown toggle */}
+          <button
+            className="admin-mobile-nav"
+            onClick={() => setNavOpen(!navOpen)}
+            style={{ display: "none", alignItems: "center", gap: "5px", background: "none", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.5)", minHeight: "auto", padding: "4px 0" }}
+          >
+            {currentLabel} <span style={{ fontSize: "9px" }}>▼</span>
+          </button>
+          {/* Desktop label */}
+          <span className="admin-sidebar" style={{ fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Admin</span>
         </div>
-        <span className="text-sm text-gray-500">{username}</span>
+        <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)" }}>{username}</span>
       </header>
-      <div className="flex">
-        <aside className="w-52 min-h-[calc(100vh-3.5rem)] bg-white border-r border-gray-200 py-6 px-3 flex-shrink-0">
-          <nav className="space-y-1">
+
+      {/* Mobile nav dropdown */}
+      {navOpen && (
+        <div className="admin-mobile-nav" style={{ display: "flex", flexDirection: "column", background: "rgba(10,10,26,0.98)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "8px 16px 14px", position: "sticky", top: "52px", zIndex: 49 }}>
+          {navItems.map(({ href, label }) => (
+            <Link key={href} href={href} style={{ textDecoration: "none", padding: "11px 0", fontSize: "15px", fontWeight: 600, color: pathname === href ? "#a78bfa" : "rgba(255,255,255,0.55)", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "block" }}>{label}</Link>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: "flex" }}>
+        {/* Desktop sidebar */}
+        <aside className="admin-sidebar" style={{ width: "190px", minHeight: "calc(100vh - 52px)", background: "#fff", borderRight: "1px solid rgba(109,40,217,0.1)", padding: "16px 10px", flexShrink: 0 }}>
+          <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
             {navItems.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                  pathname === href
-                    ? "bg-indigo-50 text-indigo-600 font-medium"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                }`}
-              >
-                {label}
-              </Link>
+              <Link key={href} href={href} style={{
+                textDecoration: "none", display: "block", padding: "8px 12px", borderRadius: "8px", fontSize: "13px", fontWeight: 600,
+                background: pathname === href ? "rgba(124,58,237,0.1)" : "transparent",
+                color: pathname === href ? "#7c3aed" : "#6d60c0",
+                border: pathname === href ? "1px solid rgba(124,58,237,0.2)" : "1px solid transparent",
+              }}>{label}</Link>
             ))}
           </nav>
         </aside>
-        <main className="flex-1 p-8">{children}</main>
+        <main style={{ flex: 1, padding: "20px 16px", minWidth: 0 }}>{children}</main>
       </div>
     </div>
   )
