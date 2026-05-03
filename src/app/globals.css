@@ -52,6 +52,7 @@ body {
 
 @media (max-width: 480px) {
   .games-grid-inner { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .hero-image { display: none !important; }
 }
 
 /* Prevent iOS input zoom */
