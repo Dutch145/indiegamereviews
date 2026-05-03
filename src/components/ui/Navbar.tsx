@@ -5,17 +5,33 @@ import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
+import type { Profile } from "@/types/database"
 
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Pick<Profile, "is_admin" | "is_reviewer"> | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const supabase = createClient()
   const pathname = usePathname()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      if (data.user) {
+        supabase.from("profiles").select("is_admin, is_reviewer").eq("id", data.user.id).single().then(({ data: p }) => {
+          setProfile(p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null)
+        })
+      }
+    })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        supabase.from("profiles").select("is_admin, is_reviewer").eq("id", session.user.id).single().then(({ data: p }) => {
+          setProfile(p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null)
+        })
+      } else {
+        setProfile(null)
+      }
     })
     return () => listener.subscription.unsubscribe()
   }, [])
@@ -29,6 +45,8 @@ export function Navbar() {
     { href: "/suggest", label: "Suggest" },
     { href: "/join", label: "Join" },
   ]
+
+  const isReviewer = profile?.is_reviewer || profile?.is_admin
 
   return (
     <>
@@ -46,7 +64,6 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop nav */}
           <nav className="desktop-nav" style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             {navLinks.map(({ href, label }) => (
               <Link key={href} href={href} style={{ textDecoration: "none", fontSize: "14px", fontWeight: 500, color: pathname === href ? "#fff" : "rgba(255,255,255,0.45)" }}>
@@ -55,10 +72,12 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop auth */}
           <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             {user ? (
               <>
+                {isReviewer && (
+                  <Link href="/submit-review" style={{ textDecoration: "none", fontSize: "12px", fontWeight: 600, color: "#a78bfa", background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", padding: "6px 12px", borderRadius: "7px" }}>Write review</Link>
+                )}
                 <Link href="/profile" style={{ textDecoration: "none", fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)", padding: "7px 14px", borderRadius: "8px" }}>Profile</Link>
                 <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/" }} style={{ fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.3)", background: "transparent", border: "none", cursor: "pointer" }}>Sign out</button>
               </>
@@ -70,7 +89,6 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile hamburger */}
           <button
             className="mobile-menu-btn"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -83,7 +101,6 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile dropdown */}
       {menuOpen && (
         <div style={{
           position: "fixed", top: "56px", left: 0, right: 0, zIndex: 49,
@@ -93,14 +110,14 @@ export function Navbar() {
         }}>
           <nav style={{ display: "flex", flexDirection: "column", marginBottom: "12px" }}>
             {navLinks.map(({ href, label }) => (
-              <Link key={href} href={href} style={{
-                textDecoration: "none", fontSize: "16px", fontWeight: 600,
-                color: pathname === href ? "#a78bfa" : "rgba(255,255,255,0.65)",
-                padding: "12px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.05)",
-                display: "block",
-              }}>{label}</Link>
+              <Link key={href} href={href} style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: pathname === href ? "#a78bfa" : "rgba(255,255,255,0.65)", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "block" }}>{label}</Link>
             ))}
+            {isReviewer && (
+              <Link href="/submit-review" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "#a78bfa", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "block" }}>Write review</Link>
+            )}
+            {isReviewer && (
+              <Link href="/my-drafts" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "rgba(167,139,250,0.7)", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "block" }}>My drafts</Link>
+            )}
           </nav>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {user ? (

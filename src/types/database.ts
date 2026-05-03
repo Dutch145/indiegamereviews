@@ -255,6 +255,7 @@ export type Database = {
           created_at: string
           id: string
           is_admin: boolean
+          is_reviewer: boolean
           username: string
         }
         Insert: {
@@ -262,6 +263,7 @@ export type Database = {
           created_at?: string
           id: string
           is_admin?: boolean
+          is_reviewer?: boolean
           username: string
         }
         Update: {
@@ -269,7 +271,62 @@ export type Database = {
           created_at?: string
           id?: string
           is_admin?: boolean
+          is_reviewer?: boolean
           username?: string
+        }
+        Relationships: []
+      }
+      review_drafts: {
+        Row: {
+          id: string
+          game_id: string
+          author_id: string
+          author_name: string
+          summary: string
+          verdict: string
+          score_overall: number
+          score_gameplay: number | null
+          score_visuals: number | null
+          score_replayability: number | null
+          score_audio: number | null
+          status: string
+          admin_notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          game_id: string
+          author_id: string
+          author_name: string
+          summary: string
+          verdict: string
+          score_overall: number
+          score_gameplay?: number | null
+          score_visuals?: number | null
+          score_replayability?: number | null
+          score_audio?: number | null
+          status?: string
+          admin_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          game_id?: string
+          author_id?: string
+          author_name?: string
+          summary?: string
+          verdict?: string
+          score_overall?: number
+          score_gameplay?: number | null
+          score_visuals?: number | null
+          score_replayability?: number | null
+          score_audio?: number | null
+          status?: string
+          admin_notes?: string | null
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -310,4 +367,5 @@ export type FlaggedReview = Database["public"]["Tables"]["flagged_reviews"]["Row
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export type GameRequest = Database["public"]["Tables"]["game_requests"]["Row"]
 export type GameRequestVote = Database["public"]["Tables"]["game_request_votes"]["Row"]
+export type ReviewDraft = Database["public"]["Tables"]["review_drafts"]["Row"]
 export type CommunityReviewWithVotes = Database["public"]["Views"]["community_reviews_with_votes"]["Row"]
