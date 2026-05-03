@@ -44,6 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/drafts", label: "Review drafts" },
     { href: "/admin/applications", label: "Reviewer applications" },
     { href: "/admin/submissions", label: "Developer submissions" },
+    { href: "/admin/developers", label: "Developer Spotlight" },
   ]
 
   const currentLabel = navItems.find((n) => n.href === pathname)?.label ?? "Admin"

@@ -12,6 +12,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      developer_spotlight: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          developer_name: string
+          game_title: string
+          id: string
+          is_featured: boolean
+          status: string | null
+          store_link: string | null
+          twitter_handle: string | null
+          twitter_post_url: string | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          developer_name: string
+          game_title: string
+          id?: string
+          is_featured?: boolean
+          status?: string | null
+          store_link?: string | null
+          twitter_handle?: string | null
+          twitter_post_url?: string | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          developer_name?: string
+          game_title?: string
+          id?: string
+          is_featured?: boolean
+          status?: string | null
+          store_link?: string | null
+          twitter_handle?: string | null
+          twitter_post_url?: string | null
+        }
+        Relationships: []
+      }
       community_reviews: {
         Row: {
           body: string
@@ -369,3 +411,4 @@ export type GameRequest = Database["public"]["Tables"]["game_requests"]["Row"]
 export type GameRequestVote = Database["public"]["Tables"]["game_request_votes"]["Row"]
 export type ReviewDraft = Database["public"]["Tables"]["review_drafts"]["Row"]
 export type CommunityReviewWithVotes = Database["public"]["Views"]["community_reviews_with_votes"]["Row"]
+export type DeveloperSpotlight = Database["public"]["Tables"]["developer_spotlight"]["Row"]

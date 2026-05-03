@@ -52,6 +52,7 @@ export function Navbar() {
     { href: "/", label: "Home" },
     { href: "/games", label: "Browse" },
     { href: "/reviews", label: "Reviews" },
+    { href: "/developers", label: "Developers" },
     { href: "/suggest", label: "Suggest" },
     { href: "/join", label: "Join" },
   ]
