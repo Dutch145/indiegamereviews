@@ -10,114 +10,97 @@ export const metadata: Metadata = {
 }
 
 type EditorReviewWithGame = {
-  id: string
-  author: string
-  published_at: string
-  verdict: string
-  score_overall: number
+  id: string; author: string; published_at: string; verdict: string; score_overall: number;
   games: { title: string; slug: string; cover_url: string | null } | null
 }
-
 type CommunityReviewWithGame = CommunityReviewWithVotes & {
   games: { title: string; slug: string; cover_url: string | null } | null
 }
 
+const box: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: "16px",
+  padding: "24px",
+  border: "1px solid rgba(109,40,217,0.1)",
+  boxShadow: "0 2px 12px rgba(109,40,217,0.06)",
+}
+
 export default async function ReviewsPage() {
   const supabase = await createClient()
-
-  const { data: editorData } = await supabase
-    .from("editor_reviews")
-    .select("id, author, published_at, verdict, score_overall, games(title, slug, cover_url)")
-    .order("published_at", { ascending: false })
-
-  const { data: communityData } = await supabase
-    .from("community_reviews_with_votes")
-    .select("*, games(title, slug, cover_url)")
-    .order("created_at", { ascending: false })
-    .limit(20)
+  const { data: editorData } = await supabase.from("editor_reviews").select("id, author, published_at, verdict, score_overall, games(title, slug, cover_url)").order("published_at", { ascending: false })
+  const { data: communityData } = await supabase.from("community_reviews_with_votes").select("*, games(title, slug, cover_url)").order("created_at", { ascending: false }).limit(20)
 
   const editors = (editorData ?? []) as unknown as EditorReviewWithGame[]
   const community = (communityData ?? []) as unknown as CommunityReviewWithGame[]
 
   return (
-    <div className="space-y-12">
-      <section>
-        <div className="flex items-center gap-3 mb-6">
-          <h1 className="text-2xl font-semibold">Editor reviews</h1>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium">{editors.length}</span>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
+      {/* Editor reviews */}
+      <div style={box}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+          <div style={{ width: "3px", height: "16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
+          <h1 style={{ fontSize: "20px", fontWeight: 800, color: "#1e1b4b" }}>Editor reviews</h1>
+          <span style={{ fontSize: "12px", fontWeight: 600, color: "#7c3aed", background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", padding: "2px 10px", borderRadius: "20px" }}>{editors.length}</span>
         </div>
         {editors.length > 0 ? (
-          <div className="space-y-3">
-            {editors.map((review) => (
-              <Link key={review.id} href={`/games/${review.games?.slug}`}>
-                <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm transition-shadow flex gap-4">
-                  <div className="w-12 h-16 rounded-lg bg-gray-900 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                    {review.games?.cover_url
-                      ? <img src={review.games.cover_url} alt={review.games.title} className="w-full h-full object-cover" />
-                      : <span className="text-white/30 font-bold text-lg">{review.games?.title[0]}</span>
-                    }
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {editors.map((review) => {
+              const sc = scoreColor(review.score_overall)
+              return (
+                <Link key={review.id} href={`/games/${review.games?.slug}`} style={{ textDecoration: "none", display: "flex", gap: "14px", background: "rgba(109,40,217,0.03)", border: "1px solid rgba(109,40,217,0.08)", borderRadius: "12px", padding: "14px" }}>
+                  <div style={{ width: "44px", height: "60px", borderRadius: "8px", background: "rgba(109,40,217,0.08)", flexShrink: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {review.games?.cover_url ? <img src={review.games.cover_url} alt={review.games.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#7c3aed", fontWeight: 700 }}>{review.games?.title[0]}</span>}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px", marginBottom: "4px" }}>
                       <div>
-                        <p className="font-medium text-sm">{review.games?.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">By {review.author} · {formatDate(review.published_at)}</p>
+                        <p style={{ fontSize: "14px", fontWeight: 700, color: "#1e1b4b" }}>{review.games?.title}</p>
+                        <p style={{ fontSize: "11px", color: "#9d8fc0" }}>By {review.author} · {formatDate(review.published_at)}</p>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium border border-indigo-100">Full review</span>
-                        <span className={`text-sm font-semibold px-2.5 py-1 rounded-lg ${scoreColor(review.score_overall)}`}>{review.score_overall}</span>
-                      </div>
+                      <span style={{ fontSize: "13px", fontWeight: 700, color: sc.color, background: sc.bg, padding: "3px 8px", borderRadius: "6px", flexShrink: 0 }}>{review.score_overall}</span>
                     </div>
-                    <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{review.verdict}</p>
+                    <p style={{ fontSize: "13px", color: "#6d60c0", lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>{review.verdict}</p>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
-        ) : <p className="text-gray-400 text-sm text-center py-12">No editor reviews yet.</p>}
-      </section>
+        ) : <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No editor reviews yet.</p>}
+      </div>
 
-      <section>
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-2xl font-semibold">Community quick reviews</h2>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">Latest 20</span>
+      {/* Community reviews */}
+      <div style={box}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+          <div style={{ width: "3px", height: "16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
+          <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#1e1b4b" }}>Community quick reviews</h2>
+          <span style={{ fontSize: "12px", fontWeight: 600, color: "#6d60c0", background: "rgba(109,40,217,0.06)", border: "1px solid rgba(109,40,217,0.12)", padding: "2px 10px", borderRadius: "20px" }}>Latest 20</span>
         </div>
         {community.length > 0 ? (
-          <div className="space-y-3">
-            {community.map((review) => (
-              <Link key={review.id} href={`/games/${review.games?.slug}`}>
-                <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm transition-shadow flex gap-4">
-                  <div className="w-12 h-16 rounded-lg bg-gray-900 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                    {review.games?.cover_url
-                      ? <img src={review.games.cover_url} alt={review.games.title} className="w-full h-full object-cover" />
-                      : <span className="text-white/30 font-bold text-lg">{review.games?.title[0]}</span>
-                    }
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {community.map((review) => {
+              const sc = scoreColor(review.score ?? 0)
+              return (
+                <Link key={review.id} href={`/games/${review.games?.slug}`} style={{ textDecoration: "none", display: "flex", gap: "14px", background: "rgba(109,40,217,0.03)", border: "1px solid rgba(109,40,217,0.08)", borderRadius: "12px", padding: "14px" }}>
+                  <div style={{ width: "44px", height: "60px", borderRadius: "8px", background: "rgba(109,40,217,0.08)", flexShrink: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {review.games?.cover_url ? <img src={review.games.cover_url} alt={review.games.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#7c3aed", fontWeight: 700 }}>{review.games?.title[0]}</span>}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px", marginBottom: "4px" }}>
                       <div>
-                        <p className="font-medium text-sm">{review.games?.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">By {review.username} · {review.created_at ? formatDate(review.created_at) : ""}</p>
+                        <p style={{ fontSize: "14px", fontWeight: 700, color: "#1e1b4b" }}>{review.games?.title}</p>
+                        <p style={{ fontSize: "11px", color: "#9d8fc0" }}>By {review.username} · {review.created_at ? formatDate(review.created_at) : ""}</p>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 font-medium border border-gray-200">Quick review</span>
-                        <span className={`text-sm font-semibold px-2.5 py-1 rounded-lg ${scoreColor(review.score ?? 0)}`}>{review.score}</span>
-                      </div>
+                      <span style={{ fontSize: "13px", fontWeight: 700, color: sc.color, background: sc.bg, padding: "3px 8px", borderRadius: "6px", flexShrink: 0 }}>{review.score}</span>
                     </div>
-                    <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{review.body}</p>
-                    {(review.pros?.length || review.cons?.length) ? (
-                      <div className="flex gap-3 mt-2">
-                        {(review.pros?.length ?? 0) > 0 && <span className="text-xs text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-100">{review.pros!.length} pro{review.pros!.length !== 1 ? "s" : ""}</span>}
-                        {(review.cons?.length ?? 0) > 0 && <span className="text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-100">{review.cons!.length} con{review.cons!.length !== 1 ? "s" : ""}</span>}
-                      </div>
-                    ) : null}
+                    <p style={{ fontSize: "13px", color: "#6d60c0", lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>{review.body}</p>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
-        ) : <p className="text-gray-400 text-sm text-center py-12">No community reviews yet.</p>}
-      </section>
+        ) : <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No community reviews yet.</p>}
+      </div>
     </div>
   )
 }

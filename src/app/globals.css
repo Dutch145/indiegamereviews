@@ -8,10 +8,10 @@
   --accent: #7c3aed;
   --accent-blue: #4f46e5;
   --accent-gradient: linear-gradient(135deg, #7c3aed, #4f46e5);
-  --bg-primary: #ede9ff;
-  --bg-secondary: #e4deff;
+  --bg-primary: #f3f0ff;
+  --bg-secondary: #ede8ff;
   --bg-card: rgba(255,255,255,0.9);
-  --border: rgba(109,40,217,0.15);
+  --border: rgba(109,40,217,0.12);
   --border-accent: rgba(124,58,237,0.4);
   --text-primary: #1e1b4b;
   --text-secondary: #3730a3;
@@ -22,7 +22,22 @@
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--bg-primary);
+  background: linear-gradient(270deg, #ddd6fe, #c7d2fe, #e0e7ff, #ede9fe, #c7d2fe, #ddd6fe);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

@@ -3,6 +3,7 @@ import { GameGrid } from "@/components/game/GameGrid"
 import { SearchAndFilter } from "@/components/game/SearchAndFilter"
 import Link from "next/link"
 import type { Game } from "@/types/database"
+import { scoreColor } from "@/lib/utils"
 
 export const metadata = {
   title: "IndieScout — Indie Game Reviews",
@@ -11,149 +12,167 @@ export const metadata = {
 
 type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+const box: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: "16px",
+  padding: "24px",
+  border: "1px solid rgba(109,40,217,0.1)",
+  boxShadow: "0 2px 12px rgba(109,40,217,0.06)",
+}
+
+function SectionLabel({ children, link, linkText }: { children: React.ReactNode; link?: string; linkText?: string }) {
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <p className="text-xs font-medium uppercase tracking-widest text-gray-400 flex-shrink-0">{children}</p>
-      <div className="flex-1 h-px bg-gray-100" />
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+      <div style={{ width: "3px", height: "14px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px", flexShrink: 0 }} />
+      <p style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#6d60c0" }}>{children}</p>
+      <div style={{ flex: 1, height: "1px", background: "rgba(109,40,217,0.1)" }} />
+      {link && <Link href={link} style={{ fontSize: "12px", fontWeight: 600, color: "#7c3aed", textDecoration: "none", flexShrink: 0 }}>{linkText ?? "View all →"}</Link>}
     </div>
   )
 }
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const { data } = await supabase
-    .from("games")
-    .select("*, editor_reviews(score_overall)")
-    .order("created_at", { ascending: false })
-
+  const { data } = await supabase.from("games").select("*, editor_reviews(score_overall)").order("created_at", { ascending: false })
   const games = (data ?? []) as unknown as GameWithReview[]
+
   const featured = games.find((g) => g.is_featured) ?? null
   const spotlight = games.find((g) => g.is_spotlight) ?? null
   const editorPicks = games.filter((g) => g.editor_pick_label)
-  const trending = [...games]
-    .sort((a, b) => (b.editor_reviews?.[0]?.score_overall ?? 0) - (a.editor_reviews?.[0]?.score_overall ?? 0))
-    .slice(0, 4)
+  const trending = [...games].sort((a, b) => (b.editor_reviews?.[0]?.score_overall ?? 0) - (a.editor_reviews?.[0]?.score_overall ?? 0)).slice(0, 5)
   const allGenres = Array.from(new Set(games.flatMap((g) => g.genres ?? []))).sort()
 
   return (
-    <div className="space-y-12">
-      {featured && (
-        <section>
-          <Link href={`/games/${featured.slug}`}>
-            <div className="rounded-2xl overflow-hidden bg-indigo-950 p-8 flex items-center gap-8 hover:opacity-95 transition-opacity cursor-pointer">
-              <div className="flex-1">
-                <div className="flex gap-2 mb-3">
-                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-indigo-700 text-indigo-200">Featured</span>
-                  {(featured.genres ?? []).slice(0, 2).map((g) => (
-                    <span key={g} className="text-xs font-medium px-3 py-1 rounded-full bg-indigo-900 text-indigo-300">{g}</span>
-                  ))}
-                </div>
-                <h1 className="text-2xl font-semibold text-indigo-50 mb-1">{featured.title}</h1>
-                <p className="text-sm text-indigo-400 mb-3">{featured.developer}{featured.release_year ? ` · ${featured.release_year}` : ""}</p>
-                <p className="text-sm text-indigo-300 leading-relaxed mb-5 max-w-md">{featured.description}</p>
-                <div className="flex items-center gap-4">
-                  <div className="bg-indigo-600 text-indigo-100 text-sm font-medium px-4 py-2 rounded-lg">Read review</div>
-                  {featured.editor_reviews?.[0] && (
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 rounded-lg bg-green-400 text-green-900 flex items-center justify-center text-sm font-semibold">
-                        {featured.editor_reviews[0].score_overall}
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
+      {/* Featured hero */}
+      {featured && (() => {
+        const sc = featured.editor_reviews?.[0] ? scoreColor(featured.editor_reviews[0].score_overall) : null
+        return (
+          <div>
+            <Link href={`/games/${featured.slug}`} style={{ textDecoration: "none", display: "block" }}>
+              <div style={{
+                background: "linear-gradient(135deg, #2d1b69, #1e1b6e)",
+                borderRadius: "12px", padding: "28px",
+                display: "flex", alignItems: "center", gap: "20px",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ position: "absolute", top: "-60px", left: "-60px", width: "180px", height: "180px", background: "rgba(167,139,250,0.15)", borderRadius: "50%", filter: "blur(40px)", pointerEvents: "none" }} />
+                <div style={{ flex: 1, position: "relative", zIndex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "12px" }}>
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: "#a78bfa", background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", padding: "3px 8px", borderRadius: "5px" }}>★ Featured</span>
+                    {(featured.genres ?? []).slice(0, 2).map((g: string) => (
+                      <span key={g} style={{ fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", padding: "3px 8px", borderRadius: "5px" }}>{g}</span>
+                    ))}
+                  </div>
+                  <h1 style={{ fontSize: "26px", fontWeight: 800, color: "#fff", marginBottom: "6px", letterSpacing: "-0.5px", lineHeight: 1.1 }}>{featured.title}</h1>
+                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", marginBottom: "10px" }}>{featured.developer}{featured.release_year ? ` · ${featured.release_year}` : ""}</p>
+                  <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginBottom: "18px" }}>{featured.description}</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <span style={{ fontSize: "13px", fontWeight: 700, background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "#fff", padding: "9px 18px", borderRadius: "9px" }}>Read review →</span>
+                    {sc && featured.editor_reviews?.[0] && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: sc.bg, border: `1px solid ${sc.color}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: 800, color: sc.color }}>
+                          {featured.editor_reviews[0].score_overall}
+                        </div>
+                        <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>Editor score</span>
                       </div>
-                      <span className="text-xs text-indigo-400">Editor score</span>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                </div>
+                <div style={{ width: "130px", height: "130px", borderRadius: "12px", flexShrink: 0, overflow: "hidden", position: "relative", zIndex: 1 }}>
+                  {featured.cover_url
+                    ? <img src={featured.cover_url} alt={featured.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    : <div style={{ width: "100%", height: "100%", background: "rgba(167,139,250,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: "44px", fontWeight: 800, color: "rgba(167,139,250,0.4)" }}>{featured.title[0]}</span></div>
+                  }
                 </div>
               </div>
-              <div className="w-32 h-32 rounded-xl bg-indigo-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                {featured.cover_url
-                  ? <img src={featured.cover_url} alt={featured.title} className="w-full h-full object-cover" />
-                  : <span className="text-5xl font-bold text-indigo-800">{featured.title[0]}</span>
-                }
-              </div>
-            </div>
-          </Link>
-        </section>
-      )}
+            </Link>
+          </div>
+        )
+      })()}
 
-      <section>
+      {/* Search */}
+      <div style={box}>
         <SearchAndFilter games={games} allGenres={allGenres} />
-      </section>
+      </div>
 
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <SectionLabel>All games</SectionLabel>
-          <Link href="/games" className="text-xs text-indigo-600 hover:underline">Browse all →</Link>
-        </div>
+      {/* All games */}
+      <div style={box}>
+        <SectionLabel link="/games" linkText="Browse all →">All games</SectionLabel>
         <GameGrid games={games} pageSize={6} />
-      </section>
+      </div>
 
+      {/* Spotlight */}
       {spotlight && (
-        <section>
+        <div style={box}>
           <SectionLabel>Indie spotlight</SectionLabel>
-          <Link href={`/games/${spotlight.slug}`}>
-            <div className="flex overflow-hidden rounded-xl border border-amber-200 bg-white hover:shadow-sm transition-shadow">
-              <div className="w-1.5 bg-amber-400 flex-shrink-0" />
-              <div className="flex-1 p-5">
-                <p className="text-xs font-medium text-amber-700 mb-2">This month&apos;s spotlight</p>
-                <p className="text-base font-semibold text-gray-900 mb-2">{spotlight.title}</p>
-                <p className="text-sm text-gray-500 leading-relaxed">{spotlight.spotlight_quote ?? spotlight.description}</p>
+          <Link href={`/games/${spotlight.slug}`} style={{ textDecoration: "none", display: "block" }}>
+            <div style={{ display: "flex", overflow: "hidden", borderRadius: "12px", border: "1px solid rgba(251,191,36,0.25)", background: "rgba(251,191,36,0.04)" }}>
+              <div style={{ width: "4px", background: "linear-gradient(180deg, #fbbf24, #f59e0b)", flexShrink: 0 }} />
+              <div style={{ flex: 1, padding: "16px 20px", minWidth: 0 }}>
+                <p style={{ fontSize: "10px", fontWeight: 700, color: "#b45309", textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: "6px" }}>This month&apos;s spotlight</p>
+                <p style={{ fontSize: "16px", fontWeight: 700, color: "#1e1b4b", marginBottom: "6px" }}>{spotlight.title}</p>
+                <p style={{ fontSize: "13px", color: "#6d60c0", lineHeight: 1.6 }}>{spotlight.spotlight_quote ?? spotlight.description}</p>
               </div>
-              <div className="w-24 bg-gray-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
+              <div style={{ width: "80px", flexShrink: 0, overflow: "hidden" }}>
                 {spotlight.cover_url
-                  ? <img src={spotlight.cover_url} alt={spotlight.title} className="w-full h-full object-cover" />
-                  : <span className="text-4xl font-bold text-white/20">{spotlight.title[0]}</span>
+                  ? <img src={spotlight.cover_url} alt={spotlight.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  : <div style={{ width: "100%", height: "100%", background: "rgba(251,191,36,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: "28px" }}>{spotlight.title[0]}</span></div>
                 }
               </div>
             </div>
           </Link>
-        </section>
+        </div>
       )}
 
+      {/* Trending */}
       {trending.length > 0 && (
-        <section>
+        <div style={box}>
           <SectionLabel>Trending games</SectionLabel>
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            {trending.map((game, i) => (
-              <Link key={game.id} href={`/games/${game.slug}`}>
-                <div className={`flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors${i < trending.length - 1 ? " border-b border-gray-100" : ""}`}>
-                  <span className="text-sm font-medium text-gray-300 w-5 text-right flex-shrink-0">{i + 1}</span>
-                  <div className="w-9 h-9 rounded-lg bg-gray-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                    {game.cover_url
-                      ? <img src={game.cover_url} alt={game.title} className="w-full h-full object-cover" />
-                      : <span className="text-sm font-bold text-white/30">{game.title[0]}</span>
-                    }
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{game.title}</p>
-                    <p className="text-xs text-gray-400">{(game.genres ?? []).slice(0, 2).join(" · ")}</p>
-                  </div>
-                  {game.editor_reviews?.[0] && (
-                    <div className="w-9 h-9 rounded-lg bg-green-100 text-green-800 flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                      {game.editor_reviews[0].score_overall}
+          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+            {trending.map((game, i) => {
+              const sc = game.editor_reviews?.[0] ? scoreColor(game.editor_reviews[0].score_overall) : null
+              return (
+                <Link key={game.id} href={`/games/${game.slug}`} style={{ textDecoration: "none", display: "block" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", borderRadius: "10px", background: i % 2 === 0 ? "rgba(109,40,217,0.03)" : "transparent" }}>
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(109,40,217,0.25)", width: "18px", textAlign: "right", flexShrink: 0 }}>{i + 1}</span>
+                    <div style={{ width: "34px", height: "34px", borderRadius: "7px", background: "rgba(109,40,217,0.08)", flexShrink: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {game.cover_url ? <img src={game.cover_url} alt={game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "12px", fontWeight: 700, color: "#7c3aed" }}>{game.title[0]}</span>}
                     </div>
-                  )}
-                </div>
-              </Link>
-            ))}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: "13px", fontWeight: 600, color: "#1e1b4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{game.title}</p>
+                      <p style={{ fontSize: "11px", color: "#9d8fc0" }}>{(game.genres ?? []).slice(0, 2).join(" · ")}</p>
+                    </div>
+                    {sc && game.editor_reviews?.[0] && (
+                      <div style={{ padding: "3px 8px", borderRadius: "5px", background: sc.bg, fontSize: "12px", fontWeight: 700, color: sc.color, flexShrink: 0 }}>
+                        {game.editor_reviews[0].score_overall}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              )
+            })}
           </div>
-        </section>
+        </div>
       )}
 
+      {/* Editor picks */}
       {editorPicks.length > 0 && (
-        <section>
+        <div style={box}>
           <SectionLabel>Editor picks</SectionLabel>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
             {editorPicks.map((game) => (
-              <Link key={game.id} href={`/games/${game.slug}`}>
-                <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow">
-                  <p className="text-xs font-medium text-indigo-600 uppercase tracking-wide mb-2">{game.editor_pick_label}</p>
-                  <p className="text-base font-semibold text-gray-900">{game.title}</p>
-                  <p className="text-sm text-gray-400 mt-1">Read the full review →</p>
+              <Link key={game.id} href={`/games/${game.slug}`} style={{ textDecoration: "none", display: "block" }}>
+                <div style={{ background: "rgba(109,40,217,0.04)", border: "1px solid rgba(109,40,217,0.1)", borderRadius: "10px", padding: "14px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "6px" }}>{game.editor_pick_label}</p>
+                  <p style={{ fontSize: "14px", fontWeight: 700, color: "#1e1b4b", marginBottom: "4px" }}>{game.title}</p>
+                  <p style={{ fontSize: "11px", color: "#7c3aed" }}>Read review →</p>
                 </div>
               </Link>
             ))}
           </div>
-        </section>
+        </div>
       )}
     </div>
   )
