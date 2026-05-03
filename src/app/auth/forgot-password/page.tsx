@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     if (!email.trim()) { setError("Please enter your email."); return }
     setLoading(true); setError(null)
     const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://indiescout.xyz/auth/reset-password",
+      redirectTo: "https://indiescout.xyz/auth/callback?type=recovery",
     })
     setLoading(false)
     if (err) { setError(err.message); return }
