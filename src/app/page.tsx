@@ -1,9 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
-import { GameGrid } from "@/components/game/GameGrid"
-import { SearchAndFilter } from "@/components/game/SearchAndFilter"
 import Link from "next/link"
 import type { Game } from "@/types/database"
-import { scoreColor } from "@/lib/utils"
+import { scoreColor, formatDate } from "@/lib/utils"
 
 export const metadata = {
   title: "IndieScout — Indie Game Reviews",
@@ -11,6 +9,16 @@ export const metadata = {
 }
 
 type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
+
+type LatestReview = {
+  id: string
+  author: string
+  summary: string
+  verdict: string
+  score_overall: number
+  published_at: string
+  games: { title: string; slug: string; developer: string; cover_url: string | null; genres: string[] | null } | null
+}
 
 const box: React.CSSProperties = {
   background: "#fff",
@@ -36,12 +44,18 @@ export default async function HomePage() {
   const { data } = await supabase.from("games").select("*, editor_reviews(score_overall)").order("created_at", { ascending: false })
   const games = (data ?? []) as unknown as GameWithReview[]
 
+  const { data: latestReviewRaw } = await supabase
+    .from("editor_reviews")
+    .select("id, author, summary, verdict, score_overall, published_at, games(title, slug, developer, cover_url, genres)")
+    .order("published_at", { ascending: false })
+    .limit(1)
+    .single()
+  const latestReview = latestReviewRaw as unknown as LatestReview | null
+
   const featured = games.find((g) => g.is_featured) ?? null
   const spotlight = games.find((g) => g.is_spotlight) ?? null
   const editorPicks = games.filter((g) => g.editor_pick_label)
   const trending = [...games].sort((a, b) => (b.editor_reviews?.[0]?.score_overall ?? 0) - (a.editor_reviews?.[0]?.score_overall ?? 0)).slice(0, 5)
-  const allGenres = Array.from(new Set(games.flatMap((g) => g.genres ?? []))).sort()
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
 
@@ -96,12 +110,49 @@ export default async function HomePage() {
         )
       })()}
 
-      <div style={box}><SearchAndFilter games={games} allGenres={allGenres} /></div>
-
-      <div style={box}>
-        <SectionLabel link="/games" linkText="Browse all →">All games</SectionLabel>
-        <GameGrid games={games} pageSize={6} />
-      </div>
+      {latestReview?.games && (() => {
+        const sc = scoreColor(latestReview.score_overall)
+        const game = latestReview.games!
+        return (
+          <div style={box}>
+            <SectionLabel link="/reviews" linkText="All reviews →">Latest editor&apos;s review</SectionLabel>
+            <Link href={`/games/${game.slug}`} style={{ textDecoration: "none", display: "block" }}>
+              <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", background: "rgba(124,58,237,0.03)", border: "1px solid rgba(124,58,237,0.1)", borderRadius: "12px", overflow: "hidden" }}>
+                <div style={{ flex: 1, padding: "16px 18px", minWidth: 0 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: sc.bg, border: `1px solid ${sc.color}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", fontWeight: 800, color: sc.color, flexShrink: 0 }}>
+                      {latestReview.score_overall}
+                    </div>
+                    <div>
+                      <p style={{ fontSize: "15px", fontWeight: 700, color: "#1e1b4b", lineHeight: 1.2 }}>{game.title}</p>
+                      <p style={{ fontSize: "11px", color: "#9d8fc0" }}>{game.developer}</p>
+                    </div>
+                    {(game.genres ?? []).slice(0, 2).map((g) => (
+                      <span key={g} style={{ fontSize: "10px", fontWeight: 600, color: "#7c3aed", background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.15)", padding: "2px 7px", borderRadius: "4px" }}>{g}</span>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: "13px", color: "#3d3580", lineHeight: 1.7, marginBottom: "10px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
+                    {latestReview.summary}
+                  </p>
+                  <p style={{ fontSize: "12px", fontStyle: "italic", color: "#6d60c0", borderLeft: "2px solid rgba(124,58,237,0.25)", paddingLeft: "10px", marginBottom: "12px", lineHeight: 1.6 }}>
+                    &ldquo;{latestReview.verdict}&rdquo;
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                    <p style={{ fontSize: "11px", color: "#9d8fc0" }}>By <span style={{ fontWeight: 600, color: "#6d60c0" }}>{latestReview.author}</span> · {formatDate(latestReview.published_at)}</p>
+                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#7c3aed" }}>Read full review →</span>
+                  </div>
+                </div>
+                <div style={{ width: "90px", flexShrink: 0, alignSelf: "stretch", overflow: "hidden" }}>
+                  {game.cover_url
+                    ? <img src={game.cover_url} alt={game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    : <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(79,70,229,0.1))", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: "28px", fontWeight: 800, color: "rgba(124,58,237,0.3)" }}>{game.title[0]}</span></div>
+                  }
+                </div>
+              </div>
+            </Link>
+          </div>
+        )
+      })()}
 
       {spotlight && (
         <div style={box}>

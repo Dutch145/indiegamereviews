@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Recurse -Path \"C:\\\\INDIESITE\\\\indiegamereviews\\\\supabase\" -Force | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\('C:\\\\INDIESITE\\\\indiegamereviews\\\\', ''\\) })"
+    ]
+  }
+}

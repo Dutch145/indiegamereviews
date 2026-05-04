@@ -88,9 +88,9 @@ function DeveloperCard({ entry }: { entry: EntryWithOembed }) {
           )}
         </div>
 
-        {/* Tweet embed */}
+        {/* Tweet embed — scrollable so it doesn't stretch the card */}
         {entry.oembed && (
-          <div style={{ marginTop: "4px" }}>
+          <div style={{ marginTop: "4px", maxHeight: "300px", overflowY: "auto", borderRadius: "8px", border: "1px solid rgba(109,40,217,0.08)" }}>
             <TweetEmbed html={entry.oembed} />
           </div>
         )}
