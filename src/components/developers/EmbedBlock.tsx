@@ -51,12 +51,13 @@ function OembedEmbed({ html, type }: { html: string; type: "twitter" | "reddit" 
         document.body.appendChild(s)
       }
     } else if (type === "reddit") {
-      if (!document.querySelector('script[src="https://embed.reddit.com/en/public.js"]')) {
-        const s = document.createElement("script")
-        s.src = "https://embed.reddit.com/en/public.js"
-        s.async = true
-        document.body.appendChild(s)
-      }
+      // Always remove + re-inject so the script re-scans after React sets innerHTML
+      const existing = document.querySelector('script[src="https://embed.reddit.com/en/public.js"]')
+      if (existing) existing.remove()
+      const s = document.createElement("script")
+      s.src = "https://embed.reddit.com/en/public.js"
+      s.async = true
+      document.body.appendChild(s)
     }
   }, [html, type])
 
