@@ -8,8 +8,9 @@ export const metadata = {
 }
 
 type EmbedData =
-  | { type: "twitter" | "reddit"; html: string }
+  | { type: "twitter"; html: string }
   | { type: "youtube"; videoId: string }
+  | { type: "reddit"; iframeSrc: string }
   | null
 
 type EntryWithEmbed = DeveloperSpotlight & { embed: EmbedData }
@@ -31,6 +32,12 @@ function detectEmbedType(url: string): "twitter" | "youtube" | "reddit" | null {
 function extractYouTubeId(url: string): string | null {
   const match = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   return match?.[1] ?? null
+}
+
+function extractRedditIframeSrc(url: string): string | null {
+  const match = url.match(/reddit\.com\/r\/([^/]+)\/comments\/([^/?#]+)/)
+  if (!match) return null
+  return `https://www.redditmedia.com/r/${match[1]}/comments/${match[2]}/?embed=true&ref_source=embed&theme=light`
 }
 
 function StatusBadge({ status }: { status: string | null }) {
@@ -70,13 +77,17 @@ function DeveloperCard({ entry }: { entry: EntryWithEmbed }) {
 
         {/* Bottom left: embed */}
         {entry.embed && (
-          entry.embed.type === "youtube" ? (
+          entry.embed.type === "twitter" ? (
+            <div className="dev-card-embed" style={{ width: "50%", flexShrink: 0, maxHeight: "320px", overflowY: "auto", borderRight: "1px solid rgba(109,40,217,0.08)" }}>
+              <EmbedBlock type="twitter" html={entry.embed.html} />
+            </div>
+          ) : entry.embed.type === "youtube" ? (
             <div className="dev-card-embed" style={{ width: "50%", flexShrink: 0, padding: "12px", borderRight: "1px solid rgba(109,40,217,0.08)" }}>
               <EmbedBlock type="youtube" videoId={entry.embed.videoId} />
             </div>
           ) : (
-            <div className="dev-card-embed" style={{ width: "50%", flexShrink: 0, maxHeight: "320px", overflowY: "auto", borderRight: "1px solid rgba(109,40,217,0.08)" }}>
-              <EmbedBlock type={entry.embed.type} html={entry.embed.html} />
+            <div className="dev-card-embed" style={{ width: "50%", flexShrink: 0, borderRight: "1px solid rgba(109,40,217,0.08)", overflow: "hidden" }}>
+              <EmbedBlock type="reddit" iframeSrc={entry.embed.iframeSrc} />
             </div>
           )
         )}
@@ -136,15 +147,20 @@ export default async function DevelopersPage() {
         return { ...entry, embed: videoId ? { type: "youtube", videoId } : null }
       }
 
-      if (type === "twitter" || type === "reddit") {
-        const oembedUrl = type === "twitter"
-          ? `https://publish.twitter.com/oembed?url=${encodeURIComponent(entry.twitter_post_url)}&omit_script=1`
-          : `https://www.reddit.com/oembed?url=${encodeURIComponent(entry.twitter_post_url)}`
+      if (type === "reddit") {
+        const iframeSrc = extractRedditIframeSrc(entry.twitter_post_url)
+        return { ...entry, embed: iframeSrc ? { type: "reddit" as const, iframeSrc } : null }
+      }
+
+      if (type === "twitter") {
         try {
-          const res = await fetch(oembedUrl, { next: { revalidate: 3600 } })
+          const res = await fetch(
+            `https://publish.twitter.com/oembed?url=${encodeURIComponent(entry.twitter_post_url)}&omit_script=1`,
+            { next: { revalidate: 3600 } }
+          )
           if (!res.ok) return { ...entry, embed: null }
           const json = await res.json()
-          return { ...entry, embed: { type, html: json.html as string } }
+          return { ...entry, embed: { type: "twitter" as const, html: json.html as string } }
         } catch {
           return { ...entry, embed: null }
         }

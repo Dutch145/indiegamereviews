@@ -9,8 +9,9 @@ declare global {
 }
 
 type EmbedBlockProps =
-  | { type: "twitter" | "reddit"; html: string }
+  | { type: "twitter"; html: string }
   | { type: "youtube"; videoId: string }
+  | { type: "reddit"; iframeSrc: string }
 
 export function EmbedBlock(props: EmbedBlockProps) {
   if (props.type === "youtube") {
@@ -27,39 +28,40 @@ export function EmbedBlock(props: EmbedBlockProps) {
     )
   }
 
-  return <OembedEmbed html={props.html} type={props.type} />
+  if (props.type === "reddit") {
+    return (
+      <iframe
+        src={props.iframeSrc}
+        style={{ width: "100%", height: "460px", border: "none", borderRadius: "8px", display: "block" }}
+        title="Reddit embed"
+        sandbox="allow-scripts allow-same-origin allow-popups"
+      />
+    )
+  }
+
+  return <TwitterEmbed html={props.html} />
 }
 
-function OembedEmbed({ html, type }: { html: string; type: "twitter" | "reddit" }) {
+function TwitterEmbed({ html }: { html: string }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (type === "twitter") {
-      function loadTwitter() {
-        if (window.twttr?.widgets && ref.current) {
-          window.twttr.widgets.load(ref.current)
-        }
+    function loadTwitter() {
+      if (window.twttr?.widgets && ref.current) {
+        window.twttr.widgets.load(ref.current)
       }
-      if (window.twttr) {
-        loadTwitter()
-      } else if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
-        const s = document.createElement("script")
-        s.src = "https://platform.twitter.com/widgets.js"
-        s.async = true
-        s.charset = "utf-8"
-        s.onload = loadTwitter
-        document.body.appendChild(s)
-      }
-    } else if (type === "reddit") {
-      // Always remove + re-inject so the script re-scans after React sets innerHTML
-      const existing = document.querySelector('script[src="https://embed.reddit.com/en/public.js"]')
-      if (existing) existing.remove()
+    }
+    if (window.twttr) {
+      loadTwitter()
+    } else if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
       const s = document.createElement("script")
-      s.src = "https://embed.reddit.com/en/public.js"
+      s.src = "https://platform.twitter.com/widgets.js"
       s.async = true
+      s.charset = "utf-8"
+      s.onload = loadTwitter
       document.body.appendChild(s)
     }
-  }, [html, type])
+  }, [html])
 
   return (
     <div
