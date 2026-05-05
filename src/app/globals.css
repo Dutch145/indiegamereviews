@@ -64,3 +64,9 @@ body {
 @media (max-width: 768px) {
   button, a { min-height: 40px; }
 }
+
+/* Developer spotlight card — bottom section stacks on mobile */
+@media (max-width: 600px) {
+  .dev-card-body { flex-direction: column !important; }
+  .dev-card-embed { width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(109,40,217,0.08) !important; }
+}

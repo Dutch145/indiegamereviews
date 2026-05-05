@@ -89,8 +89,8 @@ export default function NewDeveloperPage() {
           </Field>
         </div>
 
-        <Field label="Twitter/X post URL (for embedded tweet)">
-          <input className={inputClass} value={twitterPostUrl} onChange={(e) => setTwitterPostUrl(e.target.value)} placeholder="https://x.com/devhandle/status/..." />
+        <Field label="Post URL for embed (X/Twitter, YouTube, Reddit)">
+          <input className={inputClass} value={twitterPostUrl} onChange={(e) => setTwitterPostUrl(e.target.value)} placeholder="https://x.com/... or https://youtube.com/watch?v=..." />
         </Field>
 
         <div className="border-t border-gray-100 pt-5">

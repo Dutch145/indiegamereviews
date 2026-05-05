@@ -118,7 +118,7 @@ export default function EditDeveloperPage() {
           </Field>
         </div>
 
-        <Field label="Twitter/X post URL (for embedded tweet)">
+        <Field label="Post URL for embed (X/Twitter, YouTube, Reddit)">
           <input className={inputClass} value={twitterPostUrl} onChange={(e) => setTwitterPostUrl(e.target.value)} />
         </Field>
 
