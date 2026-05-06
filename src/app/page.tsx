@@ -263,7 +263,7 @@ export default async function HomePage() {
         <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
 
           {steamTrending.length > 0 && (
-            <div style={{ ...box, background: "#f3f0ff", border: "1px solid rgba(109,40,217,0.15)" }}>
+            <div style={{ ...box, background: "#f3f0ff", border: "1px solid rgba(109,40,217,0.15)", overflow: "hidden" }}>
               <SectionLabel>Top rated indie</SectionLabel>
               <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "4px", paddingRight: "2px" }}>
                 {steamTrending.map((game, i) => {
@@ -288,7 +288,7 @@ export default async function HomePage() {
           )}
 
           {steamNewReleases.length > 0 && (
-            <div style={{ ...box, borderLeft: "4px solid #f59e0b" }}>
+            <div style={{ ...box, borderLeft: "4px solid #f59e0b", overflow: "hidden" }}>
               <SectionLabel>New indie releases</SectionLabel>
               <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "4px", paddingRight: "2px" }}>
                 {steamNewReleases.map((game, i) => {

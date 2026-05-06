@@ -44,7 +44,7 @@ export function SearchAndFilter({ games, allGenres, alwaysOpen = false }: Props)
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px", overflow: "hidden" }}>
       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
         <input
           autoFocus={!alwaysOpen}
@@ -52,7 +52,7 @@ export function SearchAndFilter({ games, allGenres, alwaysOpen = false }: Props)
           placeholder="Search by title or developer..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, minWidth: "160px", fontSize: "14px", background: "#faf8ff", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "10px 14px", color: "#1e1b4b", outline: "none" }}
+          style={{ flex: 1, minWidth: "100px", fontSize: "14px", background: "#faf8ff", border: "1px solid rgba(124,58,237,0.2)", borderRadius: "10px", padding: "10px 14px", color: "#1e1b4b", outline: "none" }}
         />
         <select
           value={sort}

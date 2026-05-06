@@ -12,9 +12,10 @@ type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> 
 const box: React.CSSProperties = {
   background: "#fff",
   borderRadius: "16px",
-  padding: "24px",
+  padding: "20px 16px",
   border: "1px solid rgba(109,40,217,0.1)",
   boxShadow: "0 2px 12px rgba(109,40,217,0.06)",
+  overflow: "hidden",
 }
 
 export default async function BrowseGamesPage() {
