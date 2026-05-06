@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import type { Game } from "@/types/database"
 import { scoreColor, formatDate } from "@/lib/utils"
+import { DeveloperBadge } from "@/components/ui/DeveloperBadge"
 
 export const metadata = {
   title: "IndieScout — Indie Game Reviews",
@@ -312,6 +313,8 @@ export default async function HomePage() {
 
         </div>
       )}
+
+      <DeveloperBadge />
 
       {/* Discord community banner */}
       <div style={{ background: "linear-gradient(135deg, #2d1b69, #1e1b6e)", borderRadius: "16px", padding: "28px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "20px", flexWrap: "wrap" }}>

@@ -17,7 +17,7 @@ export function GameGrid({ games, pageSize = 6 }: Props) {
   const hasMore = showing < games.length
 
   return (
-    <div>
+    <div style={{ overflow: "hidden" }}>
       <div className="games-grid-inner" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "12px" }}>
         {visible.map((game) => <GameCard key={game.id} game={game} />)}
       </div>

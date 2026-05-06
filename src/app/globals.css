@@ -26,6 +26,7 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ── Liquid blob background ── */
@@ -115,8 +116,9 @@ body {
 }
 
 @media (max-width: 480px) {
-  .games-grid-inner { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .games-grid-inner { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
   .hero-image { display: none !important; }
+  .box-pad { padding: 14px !important; }
 }
 
 /* Prevent iOS input zoom */

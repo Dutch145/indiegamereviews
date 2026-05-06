@@ -21,7 +21,7 @@ export function GameCard({ game }: Props) {
         borderRadius: "12px",
         overflow: "hidden",
         height: "100%",
-        boxShadow: `0 2px 12px ${primaryStyle.bg}`,
+        boxShadow: `0 2px 6px ${primaryStyle.bg}`,
       }}>
         <div style={{ position: "relative", height: "130px" }}>
           {game.cover_url ? (
