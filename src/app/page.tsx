@@ -287,7 +287,7 @@ export default async function HomePage() {
           )}
 
           {steamNewReleases.length > 0 && (
-            <div style={{ ...box, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.35)" }}>
+            <div style={{ ...box, borderLeft: "4px solid #f59e0b" }}>
               <SectionLabel>New indie releases</SectionLabel>
               <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "4px", paddingRight: "2px" }}>
                 {steamNewReleases.map((game, i) => {
@@ -295,7 +295,7 @@ export default async function HomePage() {
                   const storeUrl = appid ? `https://store.steampowered.com/app/${appid}/` : "https://store.steampowered.com"
                   return (
                     <a key={i} href={storeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", background: "rgba(245,158,11,0.14)", border: "1px solid rgba(245,158,11,0.3)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)" }}>
                         <div style={{ width: "36px", height: "36px", borderRadius: "6px", background: "rgba(245,158,11,0.2)", flexShrink: 0, overflow: "hidden" }}>
                           <img src={game.logo} alt={game.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         </div>

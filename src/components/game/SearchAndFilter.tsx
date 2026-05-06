@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { GameGrid } from "./GameGrid"
 import type { Game } from "@/types/database"
+import { getGenreStyle } from "@/lib/genreStyles"
 
 type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
 type SortOption = "newest" | "score" | "az"
@@ -68,13 +69,22 @@ export function SearchAndFilter({ games, allGenres, alwaysOpen = false }: Props)
       </div>
       {allGenres.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-          {allGenres.map((genre: string) => (
-            <button
-              key={genre}
-              onClick={() => setSelectedGenre(selectedGenre === genre ? null : genre)}
-              style={{ fontSize: "11px", fontWeight: 600, padding: "5px 10px", borderRadius: "6px", cursor: "pointer", background: selectedGenre === genre ? "rgba(124,58,237,0.12)" : "rgba(124,58,237,0.04)", border: selectedGenre === genre ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(124,58,237,0.12)", color: selectedGenre === genre ? "#7c3aed" : "#9d8fc0" }}
-            >{genre}</button>
-          ))}
+          {allGenres.map((genre: string) => {
+            const gs = getGenreStyle(genre)
+            const active = selectedGenre === genre
+            return (
+              <button
+                key={genre}
+                onClick={() => setSelectedGenre(active ? null : genre)}
+                style={{
+                  fontSize: "11px", fontWeight: 600, padding: "5px 10px", borderRadius: "6px", cursor: "pointer",
+                  background: active ? gs.bg : "rgba(255,255,255,0.7)",
+                  border: active ? `1.5px solid ${gs.border}` : "1px solid rgba(109,40,217,0.12)",
+                  color: active ? gs.color : "#9d8fc0",
+                }}
+              >{genre}</button>
+            )
+          })}
         </div>
       )}
       {filtered.length > 0 ? (

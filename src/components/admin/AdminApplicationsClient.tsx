@@ -69,6 +69,12 @@ export function AdminApplicationsClient({ applications: initial }: { application
     setLoading(null)
   }
 
+  async function handleDelete(id: string) {
+    if (!confirm("Permanently delete this application? This cannot be undone.")) return
+    await (supabase as any).from("reviewer_applications").delete().eq("id", id)
+    setApplications((prev) => prev.filter((a) => a.id !== id))
+  }
+
   const pending = applications.filter((a) => a.status === "pending")
   const reviewed = applications.filter((a) => a.status !== "pending")
 
@@ -145,6 +151,9 @@ export function AdminApplicationsClient({ applications: initial }: { application
                 </button>
               </>
             )}
+            <button onClick={() => handleDelete(app.id)} style={{ marginLeft: "auto", fontSize: "12px", color: "#dc2626", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+              Delete
+            </button>
           </div>
         </div>
       </div>

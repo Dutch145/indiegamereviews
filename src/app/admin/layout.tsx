@@ -40,6 +40,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/games", label: "Games" },
     { href: "/admin/community", label: "Community reviews" },
     { href: "/admin/requests", label: "Game requests" },
+    { href: "/admin/applications", label: "Reviewer applications" },
+    { href: "/admin/submissions", label: "Developer submissions" },
     { href: "/admin/developers", label: "Developer Spotlight" },
   ]
 

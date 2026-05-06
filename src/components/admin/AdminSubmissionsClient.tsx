@@ -51,6 +51,12 @@ export function AdminSubmissionsClient({ submissions: initial }: { submissions: 
   const [loading, setLoading] = useState<string | null>(null)
   const supabase = createClient()
 
+  async function handleDelete(id: string) {
+    if (!confirm("Permanently delete this submission? This cannot be undone.")) return
+    await (supabase as any).from("developer_submissions").delete().eq("id", id)
+    setSubmissions((prev) => prev.filter((s) => s.id !== id))
+  }
+
   async function updateStatus(id: string, status: string) {
     if (!confirm(`Mark this submission as ${status}?`)) return
     setLoading(id)
@@ -121,6 +127,9 @@ export function AdminSubmissionsClient({ submissions: initial }: { submissions: 
                 </button>
               </>
             )}
+            <button onClick={() => handleDelete(sub.id)} style={{ marginLeft: "auto", fontSize: "12px", color: "#dc2626", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+              Delete
+            </button>
           </div>
         </div>
       </div>
