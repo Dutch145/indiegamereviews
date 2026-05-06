@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import type { CommunityReviewWithVotes } from "@/types/database"
 import { scoreColor, formatDate } from "@/lib/utils"
@@ -45,7 +46,10 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
         </div>
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: "14px", fontWeight: 600, color: "#1e1b4b" }}>
-            {review.username ?? "Anonymous"}
+            {review.username
+              ? <Link href={`/user/${encodeURIComponent(review.username)}`} style={{ color: "#1e1b4b", textDecoration: "none" }} className="hover:text-indigo-600">{review.username}</Link>
+              : "Anonymous"
+            }
             {isOwn && <span style={{ fontSize: "11px", color: "#9d8fc0", fontWeight: 400, marginLeft: "6px" }}>(you)</span>}
           </p>
           <p style={{ fontSize: "11px", color: "#9d8fc0" }}>{review.created_at ? formatDate(review.created_at) : ""}</p>

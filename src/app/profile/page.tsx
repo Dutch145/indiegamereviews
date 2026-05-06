@@ -14,12 +14,25 @@ interface Review {
   games: { title: string; slug: string; cover_url: string | null } | null;
 }
 
+const POINTS = { review: 10, request: 5, helpfulVote: 2, spotlight: 25 } as const
+
+function getRank(pts: number) {
+  if (pts >= 1000) return { label: "Legend", color: "#7c3aed" }
+  if (pts >= 500)  return { label: "Veteran", color: "#059669" }
+  if (pts >= 150)  return { label: "Contributor", color: "#2563eb" }
+  if (pts >= 50)   return { label: "Explorer", color: "#d97706" }
+  return { label: "Scout", color: "#6d60c0" }
+}
+
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState("");
   const [editingUsername, setEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [requestCount, setRequestCount] = useState(0);
+  const [helpfulVotes, setHelpfulVotes] = useState(0);
+  const [spotlightCount, setSpotlightCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [savingUsername, setSavingUsername] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -44,13 +57,27 @@ export default function ProfilePage() {
         setNewUsername(profile.username);
       }
 
-      const { data: reviewData } = await supabase
-        .from("community_reviews")
-        .select("id, score, body, created_at, games(title, slug, cover_url)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+      const [
+        { data: reviewData },
+        { count: reqCount },
+        { count: spotCount },
+      ] = await Promise.all([
+        supabase.from("community_reviews").select("id, score, body, created_at, games(title, slug, cover_url)").eq("user_id", user.id).order("created_at", { ascending: false }),
+        supabase.from("game_requests").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("developer_spotlight").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ])
 
-      setReviews((reviewData as unknown as Review[]) ?? []);
+      const reviews = (reviewData as unknown as Review[]) ?? []
+      setReviews(reviews)
+      setRequestCount(reqCount ?? 0)
+      setSpotlightCount(spotCount ?? 0)
+
+      if (reviews.length > 0) {
+        const reviewIds = reviews.map((r) => r.id)
+        const { data: voteData } = await supabase.from("helpful_votes").select("id").in("review_id", reviewIds).eq("helpful", true)
+        setHelpfulVotes(voteData?.length ?? 0)
+      }
+
       setLoading(false);
     }
     load();
@@ -89,6 +116,9 @@ export default function ProfilePage() {
     window.location.href = "/";
   }
 
+  const totalPoints = reviews.length * POINTS.review + requestCount * POINTS.request + helpfulVotes * POINTS.helpfulVote + spotlightCount * POINTS.spotlight
+  const rank = getRank(totalPoints)
+
   const avgScore = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length).toFixed(1)
     : null;
@@ -111,7 +141,13 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-6">
+
+      {/* Top row: user info + points side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+
+      {/* Left column: user info + earn points */}
+      <div className="flex flex-col gap-4">
 
       {/* Header */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -178,6 +214,58 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Earn more points quick links */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">Earn more points</p>
+        <div className="flex flex-col gap-2">
+          {[
+            { label: "Write a community review", pts: "+10 pts", href: "/games", color: "text-indigo-600", bg: "bg-indigo-50" },
+            { label: "Suggest a game", pts: "+5 pts", href: "/suggest", color: "text-amber-600", bg: "bg-amber-50" },
+            { label: "Submit to Developer Spotlight", pts: "+25 pts", href: "/developers", color: "text-purple-600", bg: "bg-purple-50" },
+          ].map(({ label, pts, href, color, bg }) => (
+            <Link key={href} href={href} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors group">
+              <span className="text-sm font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">{label}</span>
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${color} ${bg}`}>{pts}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      </div>{/* end left column */}
+
+      {/* Points card */}
+      <div className="rounded-xl p-6" style={{ background: "linear-gradient(135deg, #2d1b69, #1e1b6e)" }}>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(167,139,250,0.7)" }}>Community Points</p>
+            <p className="text-5xl font-extrabold text-white mt-1">{totalPoints.toLocaleString()}</p>
+            <span className="inline-block mt-2 text-xs font-bold px-3 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.12)", color: rank.color === "#7c3aed" ? "#a78bfa" : "white" }}>
+              {rank.label}
+            </span>
+          </div>
+          <div style={{ fontSize: "48px", opacity: 0.15 }}>★</div>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {([
+            ["Reviews written", reviews.length, POINTS.review],
+            ["Helpful votes received", helpfulVotes, POINTS.helpfulVote],
+            ["Games suggested", requestCount, POINTS.request],
+            ["Spotlights submitted", spotlightCount, POINTS.spotlight],
+          ] as [string, number, number][]).map(([label, count, pts]) => (
+            <div key={label} className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.08)" }}>
+              <p className="text-xs mb-1" style={{ color: "rgba(167,139,250,0.7)" }}>{label}</p>
+              <p className="text-sm font-bold text-white">{count} <span style={{ color: "rgba(167,139,250,0.6)", fontWeight: 400 }}>× {pts}pts</span></p>
+              <p className="text-xs font-semibold mt-0.5" style={{ color: "#a78bfa" }}>{(count * pts).toLocaleString()} pts</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs mt-4" style={{ color: "rgba(167,139,250,0.5)" }}>
+          Next rank: {totalPoints < 50 ? `Explorer at 50pts (${50 - totalPoints} to go)` : totalPoints < 150 ? `Contributor at 150pts (${150 - totalPoints} to go)` : totalPoints < 500 ? `Veteran at 500pts (${500 - totalPoints} to go)` : totalPoints < 1000 ? `Legend at 1000pts (${1000 - totalPoints} to go)` : "You have reached the highest rank!"}
+        </p>
+      </div>
+
+      </div>{/* end top grid */}
 
       {/* Reviews */}
       <div>

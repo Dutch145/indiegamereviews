@@ -59,7 +59,12 @@ export default async function AdminDevelopersPage() {
                         <span className="text-gray-300">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-gray-500 hide-mobile">{entry.is_featured ? "Yes" : "—"}</td>
+                    <td className="px-5 py-3 hide-mobile">
+                      {entry.is_featured
+                        ? <span className="text-green-700 font-medium text-xs">Featured</span>
+                        : <span className="px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Pending review</span>
+                      }
+                    </td>
                     <td className="px-5 py-3 text-gray-500 hide-mobile">{formatDate(entry.created_at)}</td>
                     <td className="px-5 py-3 text-right">
                       <Link

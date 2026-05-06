@@ -10,6 +10,11 @@ export const metadata = {
 
 type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
 
+type SteamGame = {
+  logo: string  // capsule_sm_120 URL — contains appid as /steam/apps/{id}/
+  name: string
+}
+
 type LatestReview = {
   id: string
   author: string
@@ -51,6 +56,36 @@ export default async function HomePage() {
     .limit(1)
     .single()
   const latestReview = latestReviewRaw as unknown as LatestReview | null
+
+  const steamNewReleases = await (async (): Promise<SteamGame[]> => {
+    try {
+      const res = await fetch(
+        "https://store.steampowered.com/search/results/?tags=492&sort_by=Released_DESC&json=1&count=25&cc=US&mature_content=0",
+        { next: { revalidate: 3600 }, headers: { "User-Agent": "Mozilla/5.0" } }
+      )
+      if (!res.ok) return []
+      const json = await res.json()
+      return ((json.items ?? []) as SteamGame[])
+        .filter((g) => !/\b(demo|playtest|soundtrack|bundle|dlc)\b/i.test(g.name))
+        .slice(0, 10)
+    } catch {
+      return []
+    }
+  })()
+
+  const steamTrending = await (async (): Promise<SteamGame[]> => {
+    try {
+      const res = await fetch(
+        "https://store.steampowered.com/search/results/?tags=492&filter=topsellers&json=1&count=15&cc=US&mature_content=0",
+        { next: { revalidate: 3600 }, headers: { "User-Agent": "Mozilla/5.0" } }
+      )
+      if (!res.ok) return []
+      const json = await res.json()
+      return (json.items ?? []) as SteamGame[]
+    } catch {
+      return []
+    }
+  })()
 
   const featured = games.find((g) => g.is_featured) ?? null
   const spotlight = games.find((g) => g.is_spotlight) ?? null
@@ -220,6 +255,61 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+      )}
+
+      {(steamTrending.length > 0 || steamNewReleases.length > 0) && (
+        <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+
+          {steamTrending.length > 0 && (
+            <div style={{ ...box, background: "#f3f0ff", border: "1px solid rgba(109,40,217,0.15)" }}>
+              <SectionLabel>Top rated indie</SectionLabel>
+              <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "4px", paddingRight: "2px" }}>
+                {steamTrending.map((game, i) => {
+                  const appid = game.logo.match(/\/steam\/apps\/(\d+)\//)?.[1]
+                  const storeUrl = appid ? `https://store.steampowered.com/app/${appid}/` : "https://store.steampowered.com"
+                  return (
+                    <a key={i} href={storeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.1)" }}>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "rgba(109,40,217,0.4)", width: "14px", textAlign: "right", flexShrink: 0 }}>{i + 1}</span>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "6px", background: "rgba(109,40,217,0.1)", flexShrink: 0, overflow: "hidden" }}>
+                          <img src={game.logo} alt={game.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        </div>
+                        <p style={{ flex: 1, fontSize: "12px", fontWeight: 600, color: "#1e1b4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{game.name}</p>
+                        <span style={{ fontSize: "10px", fontWeight: 700, color: "#7c3aed", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", padding: "2px 7px", borderRadius: "4px", flexShrink: 0 }}>→</span>
+                      </div>
+                    </a>
+                  )
+                })}
+              </div>
+              <p style={{ fontSize: "11px", color: "rgba(109,40,217,0.4)", textAlign: "right", marginTop: "10px" }}>Top sellers · Indie tag · Steam</p>
+            </div>
+          )}
+
+          {steamNewReleases.length > 0 && (
+            <div style={{ ...box, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.35)" }}>
+              <SectionLabel>New indie releases</SectionLabel>
+              <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "4px", paddingRight: "2px" }}>
+                {steamNewReleases.map((game, i) => {
+                  const appid = game.logo.match(/\/steam\/apps\/(\d+)\//)?.[1]
+                  const storeUrl = appid ? `https://store.steampowered.com/app/${appid}/` : "https://store.steampowered.com"
+                  return (
+                    <a key={i} href={storeUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", background: "rgba(245,158,11,0.14)", border: "1px solid rgba(245,158,11,0.3)" }}>
+                        <div style={{ width: "36px", height: "36px", borderRadius: "6px", background: "rgba(245,158,11,0.2)", flexShrink: 0, overflow: "hidden" }}>
+                          <img src={game.logo} alt={game.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        </div>
+                        <p style={{ flex: 1, fontSize: "12px", fontWeight: 600, color: "#1e1b4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{game.name}</p>
+                        <span style={{ fontSize: "10px", fontWeight: 700, color: "#92400e", background: "rgba(245,158,11,0.22)", border: "1px solid rgba(245,158,11,0.45)", padding: "2px 7px", borderRadius: "4px", flexShrink: 0 }}>New</span>
+                      </div>
+                    </a>
+                  )
+                })}
+              </div>
+              <p style={{ fontSize: "11px", color: "#b45309", textAlign: "right", marginTop: "10px", opacity: 0.7 }}>New releases · Indie · Steam</p>
+            </div>
+          )}
+
         </div>
       )}
 

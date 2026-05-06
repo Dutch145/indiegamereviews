@@ -1,3 +1,4 @@
+import Link from "next/link"
 import type { EditorReview } from "@/types/database"
 import { formatDate, scoreColor } from "@/lib/utils"
 
@@ -26,11 +27,17 @@ export function EditorReviewSection({ review }: Props) {
           <div style={{ width: "3px", height: "14px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
           <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#6d60c0" }}>Editor&apos;s review</p>
         </div>
-        <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.8 }}>{review.summary}</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          {review.summary.split(/\n\n+/).map((para, i) => (
+            <p key={i} style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
+              {para.trim()}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div style={{ ...card, background: "#faf8ff", borderLeft: "4px solid #7c3aed", borderRadius: "12px" }}>
-        <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.7 }}>
+        <p style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
           <span style={{ fontWeight: 700, color: "#7c3aed" }}>Verdict: </span>
           {review.verdict}
         </p>
@@ -54,7 +61,11 @@ export function EditorReviewSection({ review }: Props) {
       </div>
 
       <p style={{ fontSize: "12px", color: "#9d8fc0", paddingLeft: "4px" }}>
-        By {review.author} · {formatDate(review.published_at)}
+        By{" "}
+        <Link href={`/user/${encodeURIComponent(review.author)}`} style={{ color: "#7c3aed", fontWeight: 600, textDecoration: "none" }}>
+          {review.author}
+        </Link>
+        {" "}· {formatDate(review.published_at)}
       </p>
     </div>
   )

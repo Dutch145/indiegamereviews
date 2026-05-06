@@ -25,6 +25,7 @@ export type Database = {
           store_link: string | null
           twitter_handle: string | null
           twitter_post_url: string | null
+          user_id: string | null
         }
         Insert: {
           cover_url?: string | null
@@ -38,6 +39,7 @@ export type Database = {
           store_link?: string | null
           twitter_handle?: string | null
           twitter_post_url?: string | null
+          user_id?: string | null
         }
         Update: {
           cover_url?: string | null
@@ -51,6 +53,7 @@ export type Database = {
           store_link?: string | null
           twitter_handle?: string | null
           twitter_post_url?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
