@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { createClient } from "@/lib/supabase/client"
+
 import { formatDate } from "@/lib/utils"
 
 interface Submission {
@@ -49,11 +49,14 @@ export function AdminSubmissionsClient({ submissions: initial }: { submissions: 
   const [submissions, setSubmissions] = useState(initial)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const supabase = createClient()
-
   async function handleDelete(id: string) {
     if (!confirm("Permanently delete this submission? This cannot be undone.")) return
-    await (supabase as any).from("developer_submissions").delete().eq("id", id)
+    const res = await fetch("/api/admin/delete-submission", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
+    if (!res.ok) { alert("Failed to delete. Check console."); return }
     setSubmissions((prev) => prev.filter((s) => s.id !== id))
   }
 

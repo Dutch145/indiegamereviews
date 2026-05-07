@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { formatDate } from "@/lib/utils"
 
 interface Application {
@@ -41,8 +40,6 @@ export function AdminApplicationsClient({ applications: initial }: { application
   const [applications, setApplications] = useState(initial)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const supabase = createClient()
-
   async function handleApprove(app: Application) {
     if (!confirm(`Approve ${app.username} as a reviewer? This will grant them reviewer access on the site.`)) return
     setLoading(app.id)
@@ -71,7 +68,12 @@ export function AdminApplicationsClient({ applications: initial }: { application
 
   async function handleDelete(id: string) {
     if (!confirm("Permanently delete this application? This cannot be undone.")) return
-    await (supabase as any).from("reviewer_applications").delete().eq("id", id)
+    const res = await fetch("/api/admin/delete-application", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
+    if (!res.ok) { alert("Failed to delete. Check console."); return }
     setApplications((prev) => prev.filter((a) => a.id !== id))
   }
 
