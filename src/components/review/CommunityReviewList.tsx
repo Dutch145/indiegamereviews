@@ -16,11 +16,22 @@ interface Props {
 export function CommunityReviewList({ gameId, reviews, userReview }: Props) {
   const [showForm, setShowForm] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [username, setUsername] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null))
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      if (data.user) {
+        supabase.from("profiles").select("username").eq("id", data.user.id).single().then(({ data: p }) => {
+          setUsername((p as any)?.username ?? null)
+        })
+      }
+    })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      if (!session?.user) setUsername(null)
+    })
     return () => listener.subscription.unsubscribe()
   }, [])
 
@@ -66,7 +77,7 @@ export function CommunityReviewList({ gameId, reviews, userReview }: Props) {
       ) : (
         <div>
           {reviews.map((review) => (
-            <CommunityReviewCard key={review.id} review={review} isOwn={review.user_id === user?.id} currentUserId={user?.id ?? null} />
+            <CommunityReviewCard key={review.id} review={review} isOwn={review.user_id === user?.id} currentUserId={user?.id ?? null} currentUsername={username} />
           ))}
         </div>
       )}

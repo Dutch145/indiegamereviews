@@ -5,11 +5,13 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import type { CommunityReviewWithVotes } from "@/types/database"
 import { scoreColor, formatDate } from "@/lib/utils"
+import { ReviewComments } from "./ReviewComments"
 
 interface Props {
   review: CommunityReviewWithVotes
   isOwn: boolean
   currentUserId: string | null
+  currentUsername?: string | null
 }
 
 const inputStyle: React.CSSProperties = {
@@ -19,7 +21,7 @@ const inputStyle: React.CSSProperties = {
   color: "#1e1b4b",
 }
 
-export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
+export function CommunityReviewCard({ review, isOwn, currentUserId, currentUsername = null }: Props) {
   const supabase = createClient()
   const sc = scoreColor(review.score ?? 0)
 
@@ -208,6 +210,7 @@ export function CommunityReviewCard({ review, isOwn, currentUserId }: Props) {
               <button onClick={flagReview} disabled={flagged} style={{ marginLeft: "auto", fontSize: "11px", color: flagged ? "#fbbf24" : "#c4b5fd", background: "none", border: "none", cursor: flagged ? "default" : "pointer" }}>{flagged ? "Flagged" : "Flag"}</button>
             </div>
           )}
+          <ReviewComments reviewId={review.id!} currentUserId={currentUserId} currentUsername={currentUsername} />
         </>
       )}
     </div>

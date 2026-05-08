@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { EditorReviewSection } from "@/components/review/EditorReviewSection"
 import { CommunityReviewList } from "@/components/review/CommunityReviewList"
 import { GameHero } from "@/components/game/GameHero"
+import { WishlistButton } from "@/components/game/WishlistButton"
 import type { Game, EditorReview, CommunityReviewWithVotes } from "@/types/database"
 
 interface Props { params: Promise<{ slug: string }> }
@@ -33,9 +34,20 @@ export default async function GamePage({ params }: Props) {
   const { data: communityData } = await supabase.from("community_reviews_with_votes").select("*").eq("game_id", game.id).order("helpful_yes", { ascending: false })
   const communityReviews = (communityData ?? []) as unknown as CommunityReviewWithVotes[]
 
+  // Check if current user has wishlisted this game
+  const { data: { user } } = await supabase.auth.getUser()
+  let initialSaved = false
+  if (user) {
+    const { data: wl } = await supabase.from("game_wishlists").select("id").eq("game_id", game.id).eq("user_id", user.id).single()
+    initialSaved = !!wl
+  }
+
   return (
     <div style={{ paddingTop: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
       <GameHero game={game} editorScore={editorReview?.score_overall ?? null} />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <WishlistButton gameId={game.id} initialSaved={initialSaved} userId={user?.id ?? null} />
+      </div>
       {editorReview && <EditorReviewSection review={editorReview} />}
       <CommunityReviewList gameId={game.id} reviews={communityReviews} userReview={null} />
     </div>

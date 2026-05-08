@@ -213,6 +213,12 @@ export type Database = {
         }
         Relationships: []
       }
+      game_wishlists: {
+        Row:    { id: string; user_id: string; game_id: string; created_at: string }
+        Insert: { id?: string; user_id: string; game_id: string; created_at?: string }
+        Update: { id?: string; user_id?: string; game_id?: string; created_at?: string }
+        Relationships: []
+      }
       games: {
         Row: {
           banner_url: string | null
@@ -322,6 +328,12 @@ export type Database = {
           is_reviewer?: boolean
           username?: string
         }
+        Relationships: []
+      }
+      review_comments: {
+        Row:    { id: string; review_id: string; user_id: string; username: string; body: string; created_at: string }
+        Insert: { id?: string; review_id: string; user_id: string; username: string; body: string; created_at?: string }
+        Update: { id?: string; review_id?: string; user_id?: string; username?: string; body?: string; created_at?: string }
         Relationships: []
       }
       review_drafts: {

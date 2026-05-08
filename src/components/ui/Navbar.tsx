@@ -100,7 +100,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="desktop-nav" style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+          <nav className="desktop-nav" style={{ display: "flex", gap: "16px", alignItems: "center" }}>
             {navLinks.map(({ href, label }) => (
               <Link key={href} href={href} style={{ textDecoration: "none", fontSize: "14px", fontWeight: 500, color: pathname === href ? "#fff" : "rgba(255,255,255,0.45)" }}>
                 {label}

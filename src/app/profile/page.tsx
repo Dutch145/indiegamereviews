@@ -260,9 +260,12 @@ export default function ProfilePage() {
             </div>
           ))}
         </div>
-        <p className="text-xs mt-4" style={{ color: "rgba(167,139,250,0.5)" }}>
-          Next rank: {totalPoints < 50 ? `Explorer at 50pts (${50 - totalPoints} to go)` : totalPoints < 150 ? `Contributor at 150pts (${150 - totalPoints} to go)` : totalPoints < 500 ? `Veteran at 500pts (${500 - totalPoints} to go)` : totalPoints < 1000 ? `Legend at 1000pts (${1000 - totalPoints} to go)` : "You have reached the highest rank!"}
-        </p>
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-xs" style={{ color: "rgba(167,139,250,0.5)" }}>
+            Next rank: {totalPoints < 50 ? `Explorer at 50pts (${50 - totalPoints} to go)` : totalPoints < 150 ? `Contributor at 150pts (${150 - totalPoints} to go)` : totalPoints < 500 ? `Veteran at 500pts (${500 - totalPoints} to go)` : totalPoints < 1000 ? `Legend at 1000pts (${1000 - totalPoints} to go)` : "You have reached the highest rank!"}
+          </p>
+          <Link href="/leaderboard" className="text-xs font-semibold" style={{ color: "rgba(167,139,250,0.7)", textDecoration: "none" }}>View leaderboard →</Link>
+        </div>
       </div>
 
       </div>{/* end top grid */}
