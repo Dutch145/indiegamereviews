@@ -21,15 +21,24 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Pick<Profile, "is_admin" | "is_reviewer"> | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [draftBadge, setDraftBadge] = useState(0)
   const supabase = createClient()
   const pathname = usePathname()
+
+  async function fetchDraftBadge(userId: string) {
+    const { count } = await supabase.from("review_drafts").select("id", { count: "exact", head: true }).eq("author_id", userId).neq("status", "pending")
+    const seen = parseInt(localStorage.getItem("drafts_seen_count") ?? "0")
+    setDraftBadge(Math.max(0, (count ?? 0) - seen))
+  }
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
       if (data.user) {
         supabase.from("profiles").select("is_admin, is_reviewer").eq("id", data.user.id).single().then(({ data: p }) => {
-          setProfile(p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null)
+          const prof = p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null
+          setProfile(prof)
+          if (prof?.is_reviewer || prof?.is_admin) fetchDraftBadge(data.user!.id)
         })
       }
     })
@@ -37,16 +46,31 @@ export function Navbar() {
       setUser(session?.user ?? null)
       if (session?.user) {
         supabase.from("profiles").select("is_admin, is_reviewer").eq("id", session.user.id).single().then(({ data: p }) => {
-          setProfile(p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null)
+          const prof = p as unknown as Pick<Profile, "is_admin" | "is_reviewer"> | null
+          setProfile(prof)
+          if (prof?.is_reviewer || prof?.is_admin) fetchDraftBadge(session.user!.id)
         })
       } else {
         setProfile(null)
+        setDraftBadge(0)
       }
     })
     return () => listener.subscription.unsubscribe()
   }, [])
 
   useEffect(() => { setMenuOpen(false) }, [pathname])
+
+  useEffect(() => {
+    if (pathname === "/my-drafts" && draftBadge > 0) {
+      supabase.auth.getUser().then(({ data }) => {
+        if (!data.user) return
+        supabase.from("review_drafts").select("id", { count: "exact", head: true }).eq("author_id", data.user.id).neq("status", "pending").then(({ count }) => {
+          localStorage.setItem("drafts_seen_count", String(count ?? 0))
+          setDraftBadge(0)
+        })
+      })
+    }
+  }, [pathname])
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -96,6 +120,14 @@ export function Navbar() {
                 {isReviewer && (
                   <Link href="/submit-review" style={{ textDecoration: "none", fontSize: "12px", fontWeight: 600, color: "#a78bfa", background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", padding: "6px 12px", borderRadius: "7px" }}>Write review</Link>
                 )}
+                {isReviewer && (
+                  <Link href="/my-drafts" style={{ textDecoration: "none", fontSize: "12px", fontWeight: 600, color: "#a78bfa", background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", padding: "6px 12px", borderRadius: "7px", display: "flex", alignItems: "center", gap: "6px", position: "relative" }}>
+                    My drafts
+                    {draftBadge > 0 && (
+                      <span style={{ fontSize: "10px", fontWeight: 800, color: "#fff", background: "#7c3aed", borderRadius: "10px", padding: "1px 5px", lineHeight: 1.4 }}>{draftBadge}</span>
+                    )}
+                  </Link>
+                )}
                 {profile?.is_admin && (
                   <Link href="/admin" style={{ textDecoration: "none", fontSize: "12px", fontWeight: 700, color: "#fff", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", padding: "6px 12px", borderRadius: "7px" }}>Admin</Link>
                 )}
@@ -139,7 +171,12 @@ export function Navbar() {
               <Link href="/submit-review" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "#a78bfa", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "block" }}>Write review</Link>
             )}
             {isReviewer && (
-              <Link href="/my-drafts" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "rgba(167,139,250,0.7)", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "block" }}>My drafts</Link>
+              <Link href="/my-drafts" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "rgba(167,139,250,0.7)", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
+                My drafts
+                {draftBadge > 0 && (
+                  <span style={{ fontSize: "11px", fontWeight: 800, color: "#fff", background: "#7c3aed", borderRadius: "10px", padding: "2px 7px" }}>{draftBadge}</span>
+                )}
+              </Link>
             )}
             {/* Discord in mobile menu */}
             <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", fontSize: "16px", fontWeight: 600, color: "#a78bfa", padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: "8px" }}>

@@ -3,6 +3,7 @@ import Link from "next/link"
 import { scoreColor, formatDate } from "@/lib/utils"
 import type { Metadata } from "next"
 import type { CommunityReviewWithVotes } from "@/types/database"
+import { CommunityReviewsFeed } from "@/components/review/CommunityReviewsFeed"
 
 export const metadata: Metadata = {
   title: "Reviews",
@@ -74,32 +75,12 @@ export default async function ReviewsPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
           <div style={{ width: "3px", height: "16px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
           <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#1e1b4b" }}>Community quick reviews</h2>
-          <span style={{ fontSize: "12px", fontWeight: 600, color: "#6d60c0", background: "rgba(109,40,217,0.06)", border: "1px solid rgba(109,40,217,0.12)", padding: "2px 10px", borderRadius: "20px" }}>Latest 20</span>
+          <span style={{ fontSize: "12px", fontWeight: 600, color: "#7c3aed", background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", padding: "2px 10px", borderRadius: "20px" }}>{community.length}</span>
         </div>
-        {community.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {community.map((review) => {
-              const sc = scoreColor(review.score ?? 0)
-              return (
-                <Link key={review.id} href={`/games/${review.games?.slug}`} style={{ textDecoration: "none", display: "flex", gap: "14px", background: "rgba(109,40,217,0.03)", border: "1px solid rgba(109,40,217,0.08)", borderRadius: "12px", padding: "14px" }}>
-                  <div style={{ width: "44px", height: "60px", borderRadius: "8px", background: "rgba(109,40,217,0.08)", flexShrink: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    {review.games?.cover_url ? <img src={review.games.cover_url} alt={review.games.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#7c3aed", fontWeight: 700 }}>{review.games?.title[0]}</span>}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px", marginBottom: "4px" }}>
-                      <div>
-                        <p style={{ fontSize: "14px", fontWeight: 700, color: "#1e1b4b" }}>{review.games?.title}</p>
-                        <p style={{ fontSize: "11px", color: "#9d8fc0" }}>By {review.username} · {review.created_at ? formatDate(review.created_at) : ""}</p>
-                      </div>
-                      <span style={{ fontSize: "13px", fontWeight: 700, color: sc.color, background: sc.bg, padding: "3px 8px", borderRadius: "6px", flexShrink: 0 }}>{review.score}</span>
-                    </div>
-                    <p style={{ fontSize: "13px", color: "#6d60c0", lineHeight: 1.5, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } as React.CSSProperties}>{review.body}</p>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        ) : <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No community reviews yet.</p>}
+        {community.length > 0
+          ? <CommunityReviewsFeed initial={community as any} />
+          : <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No community reviews yet.</p>
+        }
       </div>
     </div>
   )

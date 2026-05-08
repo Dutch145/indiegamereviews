@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { Navbar } from "@/components/ui/Navbar"
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground"
+import { ReviewerWelcomeBanner } from "@/components/ui/ReviewerWelcomeBanner"
 import Link from "next/link"
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AnimatedBackground />
         <Navbar />
+        <ReviewerWelcomeBanner />
         <main style={{ maxWidth: "1100px", width: "100%", margin: "0 auto", padding: "0 16px 64px", flex: 1 }}>
           <div style={{ padding: "24px 0" }}>
             {children}
