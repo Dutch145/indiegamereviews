@@ -42,6 +42,11 @@ export function GameCard({ game }: Props) {
               <span style={{ fontSize: "32px", fontWeight: 800, color: primaryStyle.border }}>{game.title[0]}</span>
             </div>
           )}
+          {isEditor && (
+            <div style={{ position: "absolute", bottom: "8px", left: "8px", fontSize: "9px", fontWeight: 700, color: "#fff", background: "rgba(124,58,237,0.82)", backdropFilter: "blur(4px)", padding: "2px 7px", borderRadius: "4px", letterSpacing: "0.3px" }}>
+              ✓ Reviewed
+            </div>
+          )}
           {sc && displayScore !== null && (
             <div style={{
               position: "absolute", top: "8px", right: "8px",
