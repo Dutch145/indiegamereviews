@@ -1,6 +1,7 @@
 -- 30 critically acclaimed indie games seed
 -- Run in Supabase SQL editor after the initial schema is set up
 -- Cover images use Steam CDN headers (460x215)
+-- ON CONFLICT (slug) DO NOTHING safely skips any game already in your database
 
 insert into public.games
   (title, slug, developer, publisher, release_year, genres, platforms, description, cover_url, is_featured, is_spotlight, editor_pick_label)
@@ -274,4 +275,6 @@ values
  array['PC','Nintendo Switch','PS4'],
  'Night in the Woods is an adventure game focused on exploration, story, and character, featuring dozens of characters to meet and lots to do in a crumbling former mining town on the edge of the Great American Midwest.',
  'https://cdn.akamai.steamstatic.com/steam/apps/481510/header.jpg',
- false, false, null);
+ false, false, null)
+
+on conflict (slug) do nothing;
