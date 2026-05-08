@@ -21,6 +21,7 @@ export default function EditGamePage() {
   const [description, setDescription] = useState("")
   const [coverUrl, setCoverUrl] = useState("")
   const [bannerUrl, setBannerUrl] = useState("")
+  const [storeLink, setStoreLink] = useState("")
   const [slug, setSlug] = useState("")
   const [isFeatured, setIsFeatured] = useState(false)
   const [isSpotlight, setIsSpotlight] = useState(false)
@@ -45,6 +46,7 @@ export default function EditGamePage() {
         setDescription(g.description ?? "")
         setCoverUrl(g.cover_url ?? "")
         setBannerUrl(g.banner_url ?? "")
+        setStoreLink((g as any).store_link ?? "")
         setIsFeatured(g.is_featured)
         setIsSpotlight(g.is_spotlight)
         setSpotlightQuote(g.spotlight_quote ?? "")
@@ -67,6 +69,7 @@ export default function EditGamePage() {
       description: description.trim() || null,
       cover_url: coverUrl.trim() || null,
       banner_url: bannerUrl.trim() || null,
+      store_link: storeLink.trim() || null,
       is_featured: isFeatured, is_spotlight: isSpotlight,
       spotlight_quote: spotlightQuote.trim() || null,
       editor_pick_label: editorPickLabel.trim() || null,
@@ -111,6 +114,7 @@ export default function EditGamePage() {
           <Field label="Cover image URL"><input className={inputClass} value={coverUrl} onChange={(e) => setCoverUrl(e.target.value)} /></Field>
           <Field label="Banner image URL"><input className={inputClass} value={bannerUrl} onChange={(e) => setBannerUrl(e.target.value)} /></Field>
         </div>
+        <Field label="Store link (Steam, itch.io, etc.)"><input className={inputClass} value={storeLink} onChange={(e) => setStoreLink(e.target.value)} placeholder="https://store.steampowered.com/app/..." /></Field>
         <div className="border-t border-gray-100 pt-5 space-y-4">
           <p className="text-sm font-medium text-gray-700">Homepage curation</p>
           <div className="flex flex-col gap-3">

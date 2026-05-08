@@ -230,6 +230,7 @@ export type Database = {
           release_year: number | null
           slug: string
           spotlight_quote: string | null
+          store_link: string | null
           title: string
         }
         Insert: {
@@ -248,6 +249,7 @@ export type Database = {
           release_year?: number | null
           slug: string
           spotlight_quote?: string | null
+          store_link?: string | null
           title: string
         }
         Update: {
@@ -266,6 +268,7 @@ export type Database = {
           release_year?: number | null
           slug?: string
           spotlight_quote?: string | null
+          store_link?: string | null
           title?: string
         }
         Relationships: []

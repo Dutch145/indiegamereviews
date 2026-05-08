@@ -10,6 +10,12 @@ interface Props {
   }
 }
 
+function steamCover(storeLink: string | null | undefined): string | null {
+  if (!storeLink) return null
+  const m = storeLink.match(/store\.steampowered\.com\/app\/(\d+)/)
+  return m ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${m[1]}/header.jpg` : null
+}
+
 export function GameCard({ game }: Props) {
   const editorScore = game.editor_reviews?.[0]?.score_overall ?? null
   const communityReviews = game.community_reviews ?? []
@@ -23,6 +29,7 @@ export function GameCard({ game }: Props) {
 
   const genres = game.genres ?? []
   const primaryStyle = genres.length > 0 ? getGenreStyle(genres[0]) : DEFAULT_GENRE_STYLE
+  const coverImage = game.cover_url ?? steamCover(game.store_link)
 
   return (
     <Link href={`/games/${game.slug}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
@@ -35,8 +42,8 @@ export function GameCard({ game }: Props) {
         boxShadow: `0 2px 6px ${primaryStyle.bg}`,
       }}>
         <div style={{ position: "relative", height: "130px" }}>
-          {game.cover_url ? (
-            <img src={game.cover_url} alt={game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          {coverImage ? (
+            <img src={coverImage} alt={game.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <div style={{ width: "100%", height: "100%", background: `linear-gradient(135deg, ${primaryStyle.bg}, rgba(79,70,229,0.06))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ fontSize: "32px", fontWeight: 800, color: primaryStyle.border }}>{game.title[0]}</span>
