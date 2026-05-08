@@ -7,7 +7,10 @@ export const metadata = {
   description: "Browse and search all indie games reviewed on IndieScout.",
 }
 
-type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
+type GameWithReview = Game & {
+  editor_reviews: Array<{ score_overall: number }> | null
+  community_reviews: Array<{ score: number }> | null
+}
 
 const box: React.CSSProperties = {
   background: "#fff",
@@ -20,7 +23,7 @@ const box: React.CSSProperties = {
 
 export default async function BrowseGamesPage() {
   const supabase = await createClient()
-  const { data } = await supabase.from("games").select("*, editor_reviews(score_overall)").order("created_at", { ascending: false })
+  const { data } = await supabase.from("games").select("*, editor_reviews(score_overall), community_reviews(score)").order("created_at", { ascending: false })
   const games = (data ?? []) as unknown as GameWithReview[]
   const allGenres = Array.from(new Set(games.flatMap((g) => g.genres ?? []))).sort()
 

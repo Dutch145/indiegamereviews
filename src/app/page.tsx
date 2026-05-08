@@ -9,7 +9,10 @@ export const metadata = {
   description: "Discover the best indie games. Expert reviews, community opinions, editor picks and more.",
 }
 
-type GameWithReview = Game & { editor_reviews: Array<{ score_overall: number }> | null }
+type GameWithReview = Game & {
+  editor_reviews: Array<{ score_overall: number }> | null
+  community_reviews: Array<{ score: number }> | null
+}
 
 type SteamGame = {
   logo: string  // capsule_sm_120 URL — contains appid as /steam/apps/{id}/
@@ -47,7 +50,7 @@ function SectionLabel({ children, link, linkText }: { children: React.ReactNode;
 
 export default async function HomePage() {
   const supabase = await createClient()
-  const { data } = await supabase.from("games").select("*, editor_reviews(score_overall)").order("created_at", { ascending: false })
+  const { data } = await supabase.from("games").select("*, editor_reviews(score_overall), community_reviews(score)").order("created_at", { ascending: false })
   const games = (data ?? []) as unknown as GameWithReview[]
 
   const { data: latestReviewRaw } = await supabase

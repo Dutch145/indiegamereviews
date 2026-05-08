@@ -4,12 +4,23 @@ import { scoreColor } from "@/lib/utils"
 import { getGenreStyle, DEFAULT_GENRE_STYLE } from "@/lib/genreStyles"
 
 interface Props {
-  game: Game & { editor_reviews?: Array<{ score_overall: number }> | null }
+  game: Game & {
+    editor_reviews?: Array<{ score_overall: number }> | null
+    community_reviews?: Array<{ score: number }> | null
+  }
 }
 
 export function GameCard({ game }: Props) {
-  const score = game.editor_reviews?.[0]?.score_overall ?? null
-  const sc = score !== null ? scoreColor(score) : null
+  const editorScore = game.editor_reviews?.[0]?.score_overall ?? null
+  const communityReviews = game.community_reviews ?? []
+  const communityAvg = communityReviews.length > 0
+    ? Math.round((communityReviews.reduce((s, r) => s + r.score, 0) / communityReviews.length) * 10) / 10
+    : null
+
+  const displayScore = editorScore ?? communityAvg
+  const isEditor = editorScore !== null
+  const sc = displayScore !== null ? scoreColor(displayScore) : null
+
   const genres = game.genres ?? []
   const primaryStyle = genres.length > 0 ? getGenreStyle(genres[0]) : DEFAULT_GENRE_STYLE
 
@@ -31,9 +42,22 @@ export function GameCard({ game }: Props) {
               <span style={{ fontSize: "32px", fontWeight: 800, color: primaryStyle.border }}>{game.title[0]}</span>
             </div>
           )}
-          {sc && (
-            <div style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(255,255,255,0.92)", backdropFilter: "blur(4px)", border: `1px solid ${sc.color}33`, borderRadius: "6px", padding: "2px 7px", fontSize: "12px", fontWeight: 700, color: sc.color }}>
-              {score}
+          {sc && displayScore !== null && (
+            <div style={{
+              position: "absolute", top: "8px", right: "8px",
+              background: "rgba(255,255,255,0.92)", backdropFilter: "blur(4px)",
+              border: `1px solid ${sc.color}${isEditor ? "33" : "22"}`,
+              borderRadius: "6px", padding: "2px 7px",
+              fontSize: "12px", fontWeight: 700,
+              color: isEditor ? sc.color : sc.color + "cc",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: "0px",
+            }}>
+              <span>{isEditor ? displayScore : `★ ${displayScore}`}</span>
+              {!isEditor && communityReviews.length > 0 && (
+                <span style={{ fontSize: "8px", fontWeight: 600, color: "#9d8fc0", lineHeight: 1 }}>
+                  {communityReviews.length} {communityReviews.length === 1 ? "review" : "reviews"}
+                </span>
+              )}
             </div>
           )}
         </div>

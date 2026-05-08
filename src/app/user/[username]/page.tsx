@@ -128,7 +128,14 @@ export default async function PublicProfilePage({ params }: { params: { username
     helpfulVotes = voteData?.length ?? 0
   }
 
-  const spotlightCount = 0 // populated after user_id migration is run
+  let spotlightCount = 0
+  try {
+    const { count } = await (supabase as any)
+      .from("developer_spotlight")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", profile.id)
+    spotlightCount = count ?? 0
+  } catch { spotlightCount = 0 }
 
   const totalPoints =
     reviewList.length * POINTS.review +
