@@ -27,12 +27,26 @@ export function EditorReviewSection({ review }: Props) {
           <div style={{ width: "3px", height: "14px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px" }} />
           <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", color: "#6d60c0" }}>Editor&apos;s review</p>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          {review.summary.split(/\n\n+/).map((para, i) => (
-            <p key={i} style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
-              {para.trim()}
-            </p>
-          ))}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {review.summary.split(/\n\n+/).map((para, i) => {
+            const trimmed = para.trim()
+            const isHeading = trimmed.endsWith(":") && trimmed.length < 72 && !trimmed.includes("\n")
+            if (isHeading) {
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: i > 0 ? "6px" : 0 }}>
+                  <div style={{ width: "3px", height: "15px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "2px", flexShrink: 0 }} />
+                  <p style={{ fontSize: "12px", fontWeight: 800, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    {trimmed.slice(0, -1)}
+                  </p>
+                </div>
+              )
+            }
+            return (
+              <p key={i} style={{ fontSize: "14px", color: "#3d3580", lineHeight: 1.85, whiteSpace: "pre-wrap" }}>
+                {trimmed}
+              </p>
+            )
+          })}
         </div>
       </div>
 

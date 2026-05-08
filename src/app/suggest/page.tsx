@@ -104,16 +104,49 @@ export default function SuggestPage() {
         {requests.length === 0 ? (
           <p style={{ fontSize: "14px", color: "#9d8fc0", textAlign: "center", padding: "32px 0" }}>No requests yet — be the first!</p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {requests.map((request, i) => (
-              <div key={request.id} style={{ background: "rgba(109,40,217,0.03)", border: "1px solid rgba(109,40,217,0.08)", borderRadius: "10px", padding: "12px 14px", display: "flex", alignItems: "center", gap: "12px" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(109,40,217,0.25)", width: "18px", textAlign: "right", flexShrink: 0 }}>{i + 1}</span>
-                <p style={{ flex: 1, fontSize: "14px", fontWeight: 600, color: "#1e1b4b", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{request.title}</p>
-                <button onClick={() => handleVote(request.id)} disabled={!user} style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "13px", fontWeight: 700, padding: "6px 12px", borderRadius: "8px", cursor: user ? "pointer" : "default", border: "none", background: votedIds.has(request.id) ? "rgba(124,58,237,0.15)" : "rgba(109,40,217,0.06)", color: votedIds.has(request.id) ? "#7c3aed" : "#9d8fc0", opacity: !user ? 0.4 : 1, flexShrink: 0 }}>
-                  <span>▲</span><span>{request.votes}</span>
-                </button>
-              </div>
-            ))}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {requests.map((request, i) => {
+              const voted = votedIds.has(request.id)
+              const isTop = i === 0 && request.votes > 1
+              return (
+                <div key={request.id} style={{
+                  background: voted ? "rgba(124,58,237,0.04)" : "#fff",
+                  border: `1.5px solid ${voted ? "rgba(124,58,237,0.25)" : "rgba(109,40,217,0.1)"}`,
+                  borderRadius: "12px", padding: "14px 16px",
+                  display: "flex", alignItems: "center", gap: "14px",
+                  boxShadow: isTop ? "0 2px 12px rgba(124,58,237,0.08)" : "none",
+                }}>
+                  <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(109,40,217,0.25)", width: "18px", textAlign: "right", flexShrink: 0 }}>{i + 1}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: "14px", fontWeight: 700, color: "#1e1b4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{request.title}</p>
+                    <p style={{ fontSize: "11px", color: "#9d8fc0", marginTop: "2px" }}>
+                      {request.votes === 0
+                        ? "No votes yet — be the first!"
+                        : request.votes === 1
+                        ? "1 person wants this reviewed"
+                        : `${request.votes} people want this reviewed`
+                      }
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleVote(request.id)}
+                    disabled={!user}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", gap: "2px",
+                      padding: "8px 14px", borderRadius: "10px", cursor: user ? "pointer" : "default",
+                      border: "none", flexShrink: 0, minHeight: "auto",
+                      background: voted ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(109,40,217,0.07)",
+                      color: voted ? "#fff" : "#7c3aed",
+                      opacity: !user ? 0.4 : 1,
+                      boxShadow: voted ? "0 2px 8px rgba(124,58,237,0.3)" : "none",
+                    }}
+                  >
+                    <span style={{ fontSize: "14px", lineHeight: 1 }}>▲</span>
+                    <span style={{ fontSize: "13px", fontWeight: 800, lineHeight: 1 }}>{request.votes}</span>
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
