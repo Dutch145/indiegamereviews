@@ -13,7 +13,7 @@ values
  array['Metroidvania','Action','Adventure'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Forge your own path in Hollow Knight, a challenging 2D action-adventure through a vast ruined kingdom of insects and heroes. Explore twisting caverns, battle tainted creatures and befriend bizarre bugs, all while unraveling an ancient mystery.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/367520/header.jpg',
  false, false, null),
 
 ('Hades',
@@ -22,7 +22,7 @@ values
  array['Roguelike','Action','Dungeon Crawler'],
  array['PC','Nintendo Switch','PS4','PS5','Xbox One','Xbox Series'],
  'Defy the god of the dead as you hack and slash your way out of the Underworld in this rogue-like dungeon crawler from the creators of Bastion, Transistor, and Pyre.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/1145360/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/1145360/header.jpg',
  false, false, 'Best Roguelike'),
 
 ('Celeste',
@@ -31,7 +31,7 @@ values
  array['Precision Platformer','Platformer','Narrative'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Help Madeline survive her inner demons on her journey to the top of Celeste Mountain in this super-tight platformer from the creators of TowerFall. Brave hundreds of hand-crafted challenges, uncover devious secrets, and piece together the mystery of the mountain.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/504230/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/504230/header.jpg',
  false, false, null),
 
 ('Disco Elysium',
@@ -40,7 +40,7 @@ values
  array['RPG','Narrative','Adventure'],
  array['PC','PS4','PS5','Xbox One'],
  'You are a detective with a unique skill system at your disposal and a whole city to carve your path across. Interrogate unforgettable characters, crack murders or take bribes. Become a hero or an absolute disaster of a human being.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/632470/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/632470/header.jpg',
  false, false, 'Best RPG Narrative'),
 
 ('Stardew Valley',
@@ -49,7 +49,7 @@ values
  array['Farming','Simulation','RPG'],
  array['PC','Nintendo Switch','PS4','Xbox One','Mobile'],
  'You''ve inherited your grandfather''s old farm plot in Stardew Valley. Armed with hand-me-down tools and a few coins, you set out to begin your new life. Can you learn to live off the land and turn these overgrown fields into a thriving home?',
- 'https://cdn.akamai.steamstatic.com/steam/apps/413150/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/413150/header.jpg',
  false, false, null),
 
 ('Undertale',
@@ -58,7 +58,7 @@ values
  array['RPG','Narrative','Puzzle'],
  array['PC','Nintendo Switch','PS4'],
  'A role playing game where you don''t have to destroy anyone. Fight or negotiate your way through in an entirely non-linear underground world with memorable characters, unique puzzles and a genre-defying soundtrack.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/391540/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/391540/header.jpg',
  false, false, null),
 
 ('Cuphead',
@@ -67,7 +67,7 @@ values
  array['Action','Run and Gun','Platformer'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Cuphead is a classic run and gun action game heavily focused on boss battles, inspired by cartoons of the 1930s. The visuals and audio are painstakingly created with the same techniques of that era: hand drawn cel animation, watercolor backgrounds, and original jazz recordings.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/268910/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/268910/header.jpg',
  false, false, null),
 
 ('Into the Breach',
@@ -76,7 +76,7 @@ values
  array['Strategy','Roguelike','Tactical'],
  array['PC','Nintendo Switch'],
  'Control powerful mechs from the future to defeat an alien threat. Each attempt to save the world presents a new randomly generated challenge in this minimalist turn-based strategy game.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/590380/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/590380/header.jpg',
  false, false, null),
 
 ('Return of the Obra Dinn',
@@ -85,7 +85,7 @@ values
  array['Puzzle','Narrative','Adventure'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'In 1807, the merchant vessel Obra Dinn set out from London for the Orient with a crew of 51. Return of the Obra Dinn is a first-person mystery adventure based on exploration and logical deduction.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/653530/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/653530/header.jpg',
  false, false, null),
 
 ('Outer Wilds',
@@ -94,7 +94,7 @@ values
  array['Exploration','Narrative','Adventure'],
  array['PC','PS4','PS5','Xbox One','Xbox Series'],
  'Outer Wilds is an award-winning open world mystery about a solar system trapped in an endless time loop. Explore and uncover the mystery of a lost ancient civilization through your own curiosity and investigation.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/753640/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/753640/header.jpg',
  false, false, 'Best Exploration'),
 
 ('Hyper Light Drifter',
@@ -103,7 +103,7 @@ values
  array['Action','Adventure','Exploration'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Hyper Light Drifter is an action adventure RPG in the vein of the best 16-bit classics, with modernized mechanics and designs on an incredible scale. Explore a beautiful, vast and ruined world riddled with dangers and lost technologies.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/257850/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/257850/header.jpg',
  false, false, null),
 
 ('Transistor',
@@ -112,7 +112,7 @@ values
  array['Action','RPG','Narrative'],
  array['PC','Nintendo Switch','PS4'],
  'Transistor is a sci-fi themed action RPG that invites you to wield an extraordinary weapon of unknown origin as you fight through a stunning futuristic city. Uncover the Transistor''s mysteries as you pursue its former owners.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/237930/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/237930/header.jpg',
  false, false, null),
 
 ('FTL: Faster Than Light',
@@ -121,7 +121,7 @@ values
  array['Roguelike','Strategy','Simulation'],
  array['PC'],
  'In this top-down real time strategy roguelike, you experience the atmosphere of running a spaceship trying to save the galaxy. Randomly generated galaxy maps, diverse alien races, and challenging enemies make each run unique.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/212680/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg',
  false, false, null),
 
 ('Dead Cells',
@@ -130,7 +130,7 @@ values
  array['Roguelike','Action','Platformer'],
  array['PC','Nintendo Switch','PS4','Xbox One','Mobile'],
  'Dead Cells is a rogue-lite, Castlevania-inspired action-platformer, allowing you to explore a sprawling, ever-changing castle assuming you''re able to fight your way past its keepers.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/588650/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/588650/header.jpg',
  false, false, null),
 
 ('Terraria',
@@ -139,7 +139,7 @@ values
  array['Adventure','Survival','Exploration'],
  array['PC','Nintendo Switch','PS4','Xbox One','Mobile'],
  'Dig, fight, explore, build! Nothing is impossible in this action-packed adventure game. Explore a procedurally generated world, battle hundreds of enemies and bosses, and craft thousands of items with an almost limitless combination.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/105600/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/105600/header.jpg',
  false, false, null),
 
 ('The Messenger',
@@ -148,7 +148,7 @@ values
  array['Platformer','Action','Adventure'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'As a demon army besieges his village, a young ninja ventures through a cursed world to deliver a scroll paramount to his clan''s survival. What begins as a classic action platformer soon unravels into an expansive time-traveling adventure.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/764790/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/764790/header.jpg',
  false, false, null),
 
 ('Katana Zero',
@@ -157,7 +157,7 @@ values
  array['Action','Platformer','Narrative'],
  array['PC','Nintendo Switch'],
  'Katana Zero is a stylish neo-noir, action-platformer featuring breakneck action and instant-death combat. Overcome your opposition however the situation demands; slip into the zone, master your blade, manipulate time, and talk your way out of sticky situations.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/854950/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/854950/header.jpg',
  false, false, null),
 
 ('Firewatch',
@@ -166,7 +166,7 @@ values
  array['Narrative','Exploration','Adventure'],
  array['PC','PS4','Xbox One'],
  'Firewatch is a mystery set in the Wyoming wilderness. The year is 1989. You are a man named Henry who has retreated from your messy life to work as a fire lookout in the Shoshone National Forest.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/383870/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/383870/header.jpg',
  false, false, null),
 
 ('Spiritfarer',
@@ -175,7 +175,7 @@ values
  array['Adventure','Simulation','Narrative'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Spiritfarer is a cozy management game about dying. Play Stella, ferrymaster to the deceased, and build a boat to explore the world, care for your spirit friends, and guide them across mystical seas to finally release them into the afterlife.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/972660/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/972660/header.jpg',
  false, false, null),
 
 ('Ori and the Will of the Wisps',
@@ -184,7 +184,7 @@ values
  array['Platformer','Adventure','Metroidvania'],
  array['PC','Nintendo Switch','Xbox One','Xbox Series'],
  'In the sequel to Ori and the Blind Forest, Ori follows the spirit of a young owl on a journey to discover destiny. With genre-defining precision platforming and a deeply emotional story, Ori shines as one of gaming''s most beautiful adventures.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/1057090/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/1057090/header.jpg',
  false, false, null),
 
 ('Darkest Dungeon',
@@ -193,7 +193,7 @@ values
  array['RPG','Roguelike','Strategy'],
  array['PC','Nintendo Switch','PS4'],
  'Darkest Dungeon is a challenging gothic roguelike turn-based RPG about the psychological stresses of adventuring. Recruit, train, and lead a team of flawed heroes against unimaginable horrors, stress, disease, and the ever-encroaching dark.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/262060/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/262060/header.jpg',
  false, false, null),
 
 ('Vampire Survivors',
@@ -202,7 +202,7 @@ values
  array['Roguelike','Action','Survival'],
  array['PC','Nintendo Switch','Mobile'],
  'Mow down thousands of night creatures and avoid death until dawn. Vampire Survivors is a gothic horror casual game with rogue-lite elements, where your choices can allow you to quickly snowball against the hundreds of monsters that get thrown at you.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/1794680/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/1794680/header.jpg',
  false, false, null),
 
 ('Loop Hero',
@@ -211,7 +211,7 @@ values
  array['Roguelike','Strategy','Card Game'],
  array['PC','Nintendo Switch'],
  'The Lich has thrown the world into a timeless loop and plunged its inhabitants into never-ending chaos. Equip your ever-changing hero, fight, place cards to build your world, and unravel the mystery of the endless cycle.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/1282730/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/1282730/header.jpg',
  false, false, null),
 
 ('Monster Sanctuary',
@@ -220,7 +220,7 @@ values
  array['RPG','Creature Collector','Metroidvania'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Monster Sanctuary takes the turn-based team monster combat you love and mixes it with the exploration of a metroidvania — and a deep crafting system. Build your team of monsters, explore the world, and uncover the mysteries of the Monster Sanctuary.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/814370/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/814370/header.jpg',
  false, false, null),
 
 ('Oxenfree',
@@ -229,7 +229,7 @@ values
  array['Narrative','Adventure'],
  array['PC','Nintendo Switch','PS4','Xbox One','Mobile'],
  'Oxenfree is a supernatural thriller about a group of friends who unwittingly open a ghostly rift. Play as Alex, a bright, rebellious teenager who brings her new stepbrother Jonas to an overnight island party gone horribly wrong.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/388880/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/388880/header.jpg',
  false, false, null),
 
 ('A Short Hike',
@@ -238,7 +238,7 @@ values
  array['Adventure','Exploration'],
  array['PC','Nintendo Switch'],
  'Take a hike through the mountains on Hawk Peak Provincial Park and explore at your own pace. Climb, soar, and scramble across the island whenever you want. Along the way, meet other hikers, discover hidden treasures, and take in the world around you.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/1055540/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/1055540/header.jpg',
  false, false, null),
 
 ('Risk of Rain 2',
@@ -247,7 +247,7 @@ values
  array['Roguelike','Action','Shooter'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'Escape a chaotic alien planet by fighting through hordes of frenzied monsters – with your friends, or solo. Run, gun, and roll your way through procedurally generated stages while leveling up an expansive roster of unlockable survivors.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/632360/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/632360/header.jpg',
  false, false, null),
 
 ('CrossCode',
@@ -256,7 +256,7 @@ values
  array['RPG','Action','Adventure'],
  array['PC','Nintendo Switch','PS4','Xbox One'],
  'A retro-inspired 2D Action RPG set in the distant future. CrossCode combines 16-bit SNES-style graphics with butter-smooth physics, a fast-paced combat system, and engaging puzzle mechanics, served with a gripping sci-fi story.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/368340/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/368340/header.jpg',
  false, false, null),
 
 ('Pyre',
@@ -265,7 +265,7 @@ values
  array['RPG','Narrative','Strategy'],
  array['PC','PS4'],
  'Pyre is a party-based RPG in which you lead a band of exiles to freedom through ancient, mystical competitions. You alone can lift them from Purgatory, but who will remain in the world below?',
- 'https://cdn.akamai.steamstatic.com/steam/apps/462770/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/462770/header.jpg',
  false, false, null),
 
 ('Night in the Woods',
@@ -274,7 +274,7 @@ values
  array['Narrative','Adventure','Platformer'],
  array['PC','Nintendo Switch','PS4'],
  'Night in the Woods is an adventure game focused on exploration, story, and character, featuring dozens of characters to meet and lots to do in a crumbling former mining town on the edge of the Great American Midwest.',
- 'https://cdn.akamai.steamstatic.com/steam/apps/481510/header.jpg',
+ 'https://cdn.cloudflare.steamstatic.com/steam/apps/481510/header.jpg',
  false, false, null)
 
 on conflict (slug) do nothing;
