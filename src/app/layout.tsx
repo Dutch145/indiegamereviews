@@ -4,6 +4,7 @@ import { Navbar } from "@/components/ui/Navbar"
 import { AnimatedBackground } from "@/components/ui/AnimatedBackground"
 import { ReviewerWelcomeBanner } from "@/components/ui/ReviewerWelcomeBanner"
 import Link from "next/link"
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: { default: "IndieScout — Indie Game Reviews", template: "%s | IndieScout" },
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span style={{ fontSize: "12px", color: "#5b21b6" }}>© {new Date().getFullYear()} IndieScout</span>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   )
